@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "711386017052",
+    "firebase_url": "https://cafemironapp-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "cafemironapp",
+    "storage_bucket": "cafemironapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:711386017052:android:47f57a69dd47caea385ed9",
+        "android_client_info": {
+          "package_name": "com.example.miron"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "711386017052-uellesp7u9jhd8e0ba5n1ovngnnismi3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCLvld8svmFUn9HjhuwaayuKz9Q5Tnclso"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "711386017052-uellesp7u9jhd8e0ba5n1ovngnnismi3.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "711386017052-3nrtl7j02ig68hccnaf7c8tlt5tr1mvd.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.miron"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
