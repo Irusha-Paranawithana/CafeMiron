@@ -86,6 +86,7 @@ class _BurgerListViewState extends State<BurgerListView>
           'Café Miron',
           style: TextStyle(
             fontWeight: FontWeight.bold,
+            color: Colors.white,
           ),
         ),
         backgroundColor: Colors.orange,

@@ -1,11 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:miron/favourites.dart';
 import 'package:miron/pages/Review.dart';
-import 'package:miron/screens/user_profile.dart';
-
 import 'package:miron/views/home.dart';
 import 'package:firebase_database/firebase_database.dart';
 
@@ -15,12 +12,14 @@ class CartPage extends StatefulWidget {
 }
 
 class _CartPageState extends State<CartPage> {
-  User? user = FirebaseAuth.instance.currentUser;
   Color _startColor = Colors.white;
   Color _endColor = Colors.orange;
   Duration _animationDuration = Duration(seconds: 5);
   final DatabaseReference _databaseRef = FirebaseDatabase.instance.reference();
   List<QueryDocumentSnapshot>? cartItems;
+
+  // Declare a variable to hold the selected delivery option
+  String selectedDeliveryOption = 'TakeAway'; // Set your default value here
 
   @override
   void initState() {
@@ -165,30 +164,20 @@ class _CartPageState extends State<CartPage> {
                   );
                 },
               ),
-              GButton(
+              const GButton(
                 icon: Icons.person,
                 iconColor: Colors.orange,
                 text: "User",
                 textColor: Colors.white,
                 iconActiveColor: Colors.white,
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => UserProfileScreen(
-                        userId: user!.uid,
-                      ),
-                    ),
-                  );
-                },
-              ),
+              )
             ],
           ),
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          placeOrder();
+          _showDeliveryOptionDialog();
         },
         label: const Text('Place the Order'),
         icon: const Icon(Icons.shopping_bag),
@@ -199,7 +188,7 @@ class _CartPageState extends State<CartPage> {
         Padding(
           padding: const EdgeInsets.all(16.0),
           child: Text(
-            'Final Cart Price: \Rs${calculateFinalCartPrice().toStringAsFixed(2)}',
+            'Final Cart Price: \$${calculateFinalCartPrice().toStringAsFixed(2)}',
             style: TextStyle(
               fontSize: 18.0,
               fontWeight: FontWeight.bold,
@@ -225,30 +214,98 @@ class _CartPageState extends State<CartPage> {
         // Generate a new order ID
         String? orderId = _databaseRef.child("Orders").push().key;
 
-        // Include orderid in cart item data
+        // Include order ID and selected delivery option in cart item data
         Map<String, dynamic> orderData = {
           "orderid": orderId,
           "title": title,
           "price": price,
           "imageUrl": imageUrl,
           "quantity": quantity,
+          "deliveryOption": selectedDeliveryOption,
+          "orderStatus": "Pending"
         };
 
         try {
-          // Upload the cart item with orderid to the Realtime Database under "Orders"
+          // Upload the cart item with order ID to the Realtime Database under "Orders"
           await _databaseRef.child("Orders").child(orderId!).set(orderData);
-          print("Order Placed");
+
+          // Upload the order data to Firestore in the 'History' collection
+          await FirebaseFirestore.instance
+              .collection('History')
+              .doc(orderId)
+              .set(orderData);
 
           // Delete the cart item from Firestore
           await FirebaseFirestore.instance
               .collection('cartItems')
               .doc(item.id)
               .delete();
+          print("Order Placed");
         } catch (error) {
           print("Error placing order: $error");
         }
       }
     }
+  }
+
+  Future<void> _showDeliveryOptionDialog() async {
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Select Delivery Option"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              ElevatedButton(
+                onPressed: () {
+                  placeOrder();
+                  setState(() {
+                    selectedDeliveryOption = 'TakeAway';
+                  });
+                  Navigator.of(context).pop();
+                  // Show a success alert here
+                  showOrderPlacedAlert();
+                },
+                child: Text("Takeaway"),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  placeOrder();
+                  setState(() {
+                    selectedDeliveryOption = 'Cash on Delivery';
+                  });
+                  Navigator.of(context).pop();
+                  // Show a success alert here
+                  showOrderPlacedAlert();
+                },
+                child: Text("Cash on Delivery"),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void showOrderPlacedAlert() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Order Placed Successfully"),
+          content: Text("Your order has been placed successfully."),
+          actions: <Widget>[
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("OK"),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Future<void> addToCart(

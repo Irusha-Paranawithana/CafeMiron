@@ -59,7 +59,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       decoration: InputDecoration(
         prefixIcon: Icon(Icons.account_circle),
         contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
-        hintText: "User Name",
+        labelText: "User Name",
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
         ),
@@ -88,7 +88,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       decoration: InputDecoration(
         prefixIcon: Icon(Icons.mail),
         contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
-        hintText: "Email Address",
+        labelText: "Email Address",
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
         ),
@@ -117,7 +117,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       decoration: InputDecoration(
         prefixIcon: Icon(Icons.pin_drop),
         contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
-        hintText: "Residential Address",
+        labelText: "Residential Address",
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
         ),
@@ -147,7 +147,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       decoration: InputDecoration(
         prefixIcon: Icon(Icons.phone),
         contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
-        hintText: "Mobile Number",
+        labelText: "Mobile Number",
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
         ),
@@ -178,7 +178,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           decoration: InputDecoration(
             prefixIcon: Icon(Icons.lock),
             contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
-            hintText: "Password",
+            labelText: "Password",
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
             ),
@@ -222,7 +222,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           decoration: InputDecoration(
             prefixIcon: Icon(Icons.lock),
             contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
-            hintText: "Confirm Password",
+            labelText: "Confirm Password",
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
             ),
@@ -251,7 +251,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     ///signup button
     final signUpButton = Material(
       elevation: 5,
-      color: Colors.redAccent,
+      color: Colors.orange,
       borderRadius: BorderRadius.circular(30),
       child: MaterialButton(
         padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
@@ -287,7 +287,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         SizedBox(
                           height: 150,
                           child: Image.asset(
-                            "assets/images/logo.png",
+                            "assets/images/cafe_logo.png",
                             width: 130,
                             fit: BoxFit.contain,
                           ),
@@ -341,7 +341,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 15,
-                                    color: Colors.redAccent),
+                                    color: Colors.orange),
                               ),
                             )
                           ],

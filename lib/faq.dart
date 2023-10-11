@@ -14,7 +14,10 @@ class _FAQPageState extends State<FAQPage> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text('FAQ'),
+        title: const Text(
+          'FAQ',
+          style: TextStyle(color: Colors.white),
+        ),
         backgroundColor: Colors.orange,
       ),
       body: StreamBuilder<QuerySnapshot>(

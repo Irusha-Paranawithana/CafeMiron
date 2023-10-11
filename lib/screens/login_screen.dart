@@ -1,5 +1,4 @@
 import 'package:miron/auth_helper.dart';
-
 import 'package:miron/screens/registration_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -77,7 +76,7 @@ class _LoginScreenState extends State<LoginScreen> {
       decoration: InputDecoration(
         prefixIcon: Icon(Icons.mail),
         contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
-        hintText: "Email",
+        labelText: "Email",
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
         ),
@@ -107,7 +106,7 @@ class _LoginScreenState extends State<LoginScreen> {
           decoration: InputDecoration(
             prefixIcon: Icon(Icons.lock),
             contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
-            hintText: "Password",
+            labelText: "Password",
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
             ),
@@ -135,106 +134,110 @@ class _LoginScreenState extends State<LoginScreen> {
     final loginButton = Stack(
       children: [
         Material(
-          elevation: 5,
-          color: Colors.redAccent,
-          borderRadius: BorderRadius.circular(30),
-          child: MaterialButton(
-            padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
-            minWidth: MediaQuery.of(context).size.width * 0.5,
-            onPressed: () {
-              signInWithEmailPassword();
-            },
-            child: const Text(
-              "Login",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 20,
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
+            elevation: 5,
+            color: Colors.orange,
+            borderRadius: BorderRadius.circular(30),
+            child: IgnorePointer(
+              ignoring: _isLoading,
+              child: MaterialButton(
+                padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+                minWidth: MediaQuery.of(context).size.width * 0.5,
+                onPressed: () {
+                  signInWithEmailPassword();
+                },
+                child: const Text(
+                  "Login",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
-            ),
-          ),
-        ),
-        if (_isLoading)
-          Visibility(
-            maintainSize: true,
-            maintainAnimation: true,
-            maintainState: true,
-            visible: _isLoading,
-            child: const CircularProgressIndicator(
-              color: Colors.black,
-            ),
-          ),
+            )),
       ],
     );
 
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Center(
-        child: SingleChildScrollView(
-          child: Container(
-            color: Colors.white,
-            child: Padding(
-              padding: const EdgeInsets.all(30.0),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    SizedBox(
-                      height: 200,
-                      child: Image.asset(
-                        "assets/images/logo.png",
-                        width: 180,
-                        fit: BoxFit.contain,
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            child: Container(
+              color: Colors.white,
+              child: Padding(
+                padding: const EdgeInsets.all(30.0),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      const SizedBox(
+                        height: 80,
                       ),
-                    ),
-                    const SizedBox(
-                      height: 45,
-                    ),
-                    emailField,
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    passwordField,
-                    const SizedBox(
-                      height: 40,
-                    ),
-                    loginButton,
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        const Text("Don't have an account? "),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => RegistrationScreen(),
+                      SizedBox(
+                        height: 200,
+                        child: Image.asset(
+                          "assets/images/cafe_logo.png",
+                          width: 180,
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 45,
+                      ),
+                      emailField,
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      passwordField,
+                      const SizedBox(
+                        height: 40,
+                      ),
+                      loginButton,
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          const Text("Don't have an account? "),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => RegistrationScreen(),
+                                ),
+                              );
+                            },
+                            child: const Text(
+                              "SignUp",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15,
+                                color: Colors.orange,
                               ),
-                            );
-                          },
-                          child: const Text(
-                            "SignUp",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 15,
-                              color: Colors.redAccent,
                             ),
-                          ),
-                        )
-                      ],
-                    )
-                  ],
+                          )
+                        ],
+                      )
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
-        ),
+          if (_isLoading)
+            Container(
+              color: Colors.black.withOpacity(0.5),
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
+            ),
+        ],
       ),
     );
   }

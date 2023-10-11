@@ -88,7 +88,10 @@ class _ProductState extends State<Product> {
       child: Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: Text('Café Miron'), // Set app bar title
+          title: Text(
+            'Café Miron',
+            style: TextStyle(color: Colors.white),
+          ), // Set app bar title
           backgroundColor: Colors.orange, // Set app bar background color
         ),
         body: AnimatedContainer(

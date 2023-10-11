@@ -100,7 +100,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('User Profile'),
+        title: Text(
+          'User Profile',
+          style: TextStyle(color: Colors.white),
+        ),
       ),
       body: SingleChildScrollView(
         child: Stack(
@@ -121,6 +124,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           fit: BoxFit.contain,
                         ),
                       ),
+                    ),
+                    const SizedBox(
+                      height: 20,
                     ),
                     TextFormField(
                       autofocus: false,
@@ -199,13 +205,25 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                         return null;
                       },
                     ),
-                    SizedBox(height: 30),
+                    SizedBox(height: 50),
                     Center(
-                      child: ElevatedButton(
-                        onPressed: isLoading ? null : updateUserProfile,
-                        child: Text('Update Profile'),
+                      child: SizedBox(
+                        height: 50,
+                        width: MediaQuery.of(context).size.width * 0.5,
+                        child: ElevatedButton(
+                          onPressed: isLoading ? null : updateUserProfile,
+                          child: Text('Update Profile'),
+                          style: ButtonStyle(
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(100),
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
+                    )
                   ],
                 ),
               ),

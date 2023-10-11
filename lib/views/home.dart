@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:miron/auth_helper.dart';
 import 'package:miron/cart.dart';
 import 'package:miron/contact.dart';
 import 'package:miron/faq.dart';
@@ -12,7 +13,6 @@ import 'package:miron/myOrders.dart';
 import 'package:miron/pages/Review.dart';
 import 'package:miron/pages/firebase_service.dart';
 import 'package:miron/screens/user_profile.dart';
-
 import 'package:miron/views/widgets/receipe_card.dart';
 
 class MyApp extends StatelessWidget {
@@ -100,7 +100,10 @@ class _HomepageState extends State<Homepage> {
       backgroundColor: Colors.transparent,
       appBar: AppBar(
         centerTitle: true,
-        title: const Text('Café Miron'),
+        title: const Text(
+          'Café Miron',
+          style: TextStyle(color: Colors.white),
+        ),
         backgroundColor: Colors.orange,
       ),
       drawer: Drawer(
@@ -145,6 +148,13 @@ class _HomepageState extends State<Homepage> {
               onTap: () {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => ContactUsPage()));
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.logout),
+              title: const Text('Logout'),
+              onTap: () {
+                AuthHelper.instance.logout(context);
               },
             ),
           ],
@@ -216,14 +226,14 @@ class _HomepageState extends State<Homepage> {
                       ? const CircularProgressIndicator()
                       : GridView.builder(
                           gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
+                              SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 2,
                             crossAxisSpacing: 10.0,
                             mainAxisSpacing: 10.0,
                           ),
                           itemCount: _foodTypes.length,
                           shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
+                          physics: NeverScrollableScrollPhysics(),
                           itemBuilder: (context, index) {
                             final recipeData = _foodTypes[index];
                             final title = recipeData['title'] ?? 'No Title';
@@ -231,9 +241,24 @@ class _HomepageState extends State<Homepage> {
                                 recipeData['thumbnailUrl'] ?? 'No Thumbnail';
                             return GestureDetector(
                               onTap: () {
+                                // Navigate to the corresponding Dart file based on the title
                                 Navigator.push(
                                   context,
-                                  _createRoute(BurgerListView()),
+                                  MaterialPageRoute(
+                                    builder: (context) {
+                                      if (title == 'Burgers') {
+                                        return BurgerListView();
+                                      } else {
+                                        // Handle other food items here
+                                        // You can create additional if conditions or use a switch statement
+                                        // to navigate to different pages for each food item.
+                                        // Return a default page or show an error message.
+                                        return Container(
+                                          child: Text('Page not found'),
+                                        );
+                                      }
+                                    },
+                                  ),
                                 );
                               },
                               child: RecipeCard(

@@ -46,7 +46,10 @@ class _ReviewState extends State<Review> with TickerProviderStateMixin {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text('Café Miron'),
+        title: const Text(
+          'Café Miron',
+          style: TextStyle(color: Colors.white),
+        ),
         backgroundColor: Colors.orange,
       ),
       body: Column(

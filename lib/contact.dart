@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:miron/map_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
+import 'package:uni_links/uni_links.dart';
 
 void main() {
   runApp(ContactUsApp());
@@ -34,25 +36,15 @@ class _ContactUsPageState extends State<ContactUsPage> {
         .get();
   }
 
-  Future<void> _launchURL(String url) async {
-    try {
-      final uri = Uri.parse(url);
-      if (await canLaunchUrl(uri)) {
-        await launchUrl(uri);
-      } else {
-        throw 'Could not launch $url';
-      }
-    } on Exception catch (e) {
-      // Handle the exception here.
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Contact Us'),
-        backgroundColor: Colors.blue, // Change the app bar color
+        title: Text(
+          'Contact Us',
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Colors.orange, // Change the app bar color
       ),
       body: FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
         future: contactData,
@@ -109,7 +101,7 @@ class _ContactUsPageState extends State<ContactUsPage> {
                       subtitle: GestureDetector(
                         onTap: () async {
                           final mailtoUrl = 'mailto:$email';
-                          await _launchURL(mailtoUrl);
+                          //await _launchURL(mailtoUrl);
                         },
                         child: Text(
                           email,
@@ -157,9 +149,9 @@ class _ContactUsPageState extends State<ContactUsPage> {
                       ),
                       subtitle: ElevatedButton(
                         onPressed: () {
-                          _launchURL(website); // Use the _launchURL function
+                          // _launchURL(website); // Use the _launchURL function
                         },
-                        child: Text('Show Flutter homepage'),
+                        child: Text('Visit Cafe Miron Website'),
                       ),
                     ),
                   if (address != null)
@@ -175,9 +167,7 @@ class _ContactUsPageState extends State<ContactUsPage> {
                   SizedBox(height: 20), // Add spacing
                   ElevatedButton(
                     onPressed: () async {
-                      final mapsUrl =
-                          'https://www.google.com/maps/search/?api=1&query=${Uri.encodeFull(address)}';
-                      await _launchURL(mapsUrl); // Use the _launchURL function
+                      MapUtils.openMap(81.0090496, 6.3504384);
                     },
                     child: Text('Find Cafe Miron on Google Maps'),
                   ),
