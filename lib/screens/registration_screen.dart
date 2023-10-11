@@ -355,7 +355,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           ),
           if (_isLoading) // Display loading indicator with a semi-transparent background
             Container(
-              color: Colors.black.withOpacity(0.3),
+              color: Colors.black.withOpacity(0.5),
               child: Center(
                 child: CircularProgressIndicator(),
               ),

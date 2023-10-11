@@ -3,6 +3,7 @@ import 'package:miron/screens/registration_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:miron/screens/resetPasswordScreen.dart';
 import 'package:miron/views/home.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -159,6 +160,24 @@ class _LoginScreenState extends State<LoginScreen> {
       ],
     );
 
+    Widget forgetPassword(BuildContext context) {
+      return Container(
+        width: MediaQuery.of(context).size.width,
+        height: 35,
+        alignment: Alignment.bottomRight,
+        child: TextButton(
+          child: const Text(
+            "Forget Password ?",
+            style: TextStyle(color: Colors.orange),
+          ),
+          onPressed: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => ResetPassScreen()));
+          },
+        ),
+      );
+    }
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: Stack(
@@ -194,7 +213,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       passwordField,
                       const SizedBox(
-                        height: 40,
+                        height: 2,
+                      ),
+                      forgetPassword(context),
+                      const SizedBox(
+                        height: 45,
                       ),
                       loginButton,
                       const SizedBox(
