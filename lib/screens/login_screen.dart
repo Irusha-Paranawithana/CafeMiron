@@ -42,7 +42,7 @@ class _LoginScreenState extends State<LoginScreen> {
         await prefs.setBool('isLoggedIn', true);
 
         Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => Homepage()),
+          MaterialPageRoute(builder: (context) => const Homepage()),
         );
       } else {
         Fluttertoast.showToast(
@@ -75,8 +75,8 @@ class _LoginScreenState extends State<LoginScreen> {
       },
       textInputAction: TextInputAction.next,
       decoration: InputDecoration(
-        prefixIcon: Icon(Icons.mail),
-        contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+        prefixIcon: const Icon(Icons.mail),
+        contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
         labelText: "Email",
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
@@ -105,8 +105,8 @@ class _LoginScreenState extends State<LoginScreen> {
           },
           textInputAction: TextInputAction.done,
           decoration: InputDecoration(
-            prefixIcon: Icon(Icons.lock),
-            contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+            prefixIcon: const Icon(Icons.lock),
+            contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
             labelText: "Password",
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
@@ -141,7 +141,7 @@ class _LoginScreenState extends State<LoginScreen> {
             child: IgnorePointer(
               ignoring: _isLoading,
               child: MaterialButton(
-                padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+                padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
                 minWidth: MediaQuery.of(context).size.width * 0.5,
                 onPressed: () {
                   signInWithEmailPassword();
@@ -171,8 +171,10 @@ class _LoginScreenState extends State<LoginScreen> {
             style: TextStyle(color: Colors.orange),
           ),
           onPressed: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => ResetPassScreen()));
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const ResetPassScreen()));
           },
         ),
       );
@@ -217,7 +219,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       forgetPassword(context),
                       const SizedBox(
-                        height: 45,
+                        height: 40,
                       ),
                       loginButton,
                       const SizedBox(
@@ -232,7 +234,8 @@ class _LoginScreenState extends State<LoginScreen> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => RegistrationScreen(),
+                                  builder: (context) =>
+                                      const RegistrationScreen(),
                                 ),
                               );
                             },
@@ -256,7 +259,7 @@ class _LoginScreenState extends State<LoginScreen> {
           if (_isLoading)
             Container(
               color: Colors.black.withOpacity(0.5),
-              child: Center(
+              child: const Center(
                 child: CircularProgressIndicator(),
               ),
             ),

@@ -210,31 +210,6 @@ class _ReviewState extends State<Review> with TickerProviderStateMixin {
                   );
                 },
               ),
-              GButton(
-                icon: Icons.edit_document,
-                iconColor: Colors.orange,
-                text: "Inquiries",
-                textColor: Colors.white,
-                iconActiveColor: Colors.white,
-                onPressed: () {},
-              ),
-              GButton(
-                icon: Icons.person,
-                iconColor: Colors.orange,
-                text: "User",
-                textColor: Colors.white,
-                iconActiveColor: Colors.white,
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => UserProfileScreen(
-                        userId: user!.uid,
-                      ),
-                    ),
-                  );
-                },
-              ),
             ],
           ),
         ),

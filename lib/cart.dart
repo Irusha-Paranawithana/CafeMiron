@@ -149,28 +149,6 @@ class _CartPageState extends State<CartPage> {
                   );
                 },
               ),
-              GButton(
-                icon: Icons.edit_document,
-                iconColor: Colors.orange,
-                text: "Inquiries",
-                textColor: Colors.white,
-                iconActiveColor: Colors.white,
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const Review(),
-                    ),
-                  );
-                },
-              ),
-              const GButton(
-                icon: Icons.person,
-                iconColor: Colors.orange,
-                text: "User",
-                textColor: Colors.white,
-                iconActiveColor: Colors.white,
-              )
             ],
           ),
         ),

@@ -18,7 +18,7 @@ class _FavPageState extends State<FavPage> {
   User? user = FirebaseAuth.instance.currentUser;
   Color _startColor = Colors.white;
   Color _endColor = Colors.orange;
-  Duration _animationDuration = Duration(seconds: 5);
+  Duration _animationDuration = const Duration(seconds: 5);
 
 // Initially select the "Favourites" tab
 
@@ -44,7 +44,7 @@ class _FavPageState extends State<FavPage> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text(
+        title: const Text(
           'Café Miron ',
           style: TextStyle(
             color: Colors.white,
@@ -61,7 +61,7 @@ class _FavPageState extends State<FavPage> {
           child: GNav(
             gap: 8,
             tabBackgroundColor: Colors.orange,
-            padding: EdgeInsets.all(20),
+            padding: const EdgeInsets.all(20),
             tabs: [
               GButton(
                 icon: Icons.home,
@@ -101,38 +101,6 @@ class _FavPageState extends State<FavPage> {
                   );
                 },
               ),
-              GButton(
-                icon: Icons.edit_document,
-                iconColor: Colors.orange,
-                text: "Inquiries",
-                textColor: Colors.white,
-                iconActiveColor: Colors.white,
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => Review(),
-                    ),
-                  );
-                },
-              ),
-              GButton(
-                icon: Icons.person,
-                iconColor: Colors.orange,
-                text: "User",
-                textColor: Colors.white,
-                iconActiveColor: Colors.white,
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => UserProfileScreen(
-                        userId: user!.uid, // Pass the current user's ID
-                      ),
-                    ),
-                  );
-                },
-              ),
             ],
           ),
         ),
@@ -148,7 +116,7 @@ class CartItemList extends StatelessWidget {
       stream: FirebaseFirestore.instance.collection('Favourites').snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return Center(
+          return const Center(
             child: CircularProgressIndicator(),
           );
         }
@@ -156,7 +124,7 @@ class CartItemList extends StatelessWidget {
         final cartItems = snapshot.data!.docs;
 
         if (cartItems.isEmpty) {
-          return Center(
+          return const Center(
             child: Text(
               'You don\'t have any Favourites.',
               style: TextStyle(
@@ -207,13 +175,13 @@ class CartItemTile extends StatelessWidget {
     final double priceDouble = double.parse(price);
 
     return Card(
-      margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+      margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       child: ListTile(
-        contentPadding: EdgeInsets.all(16.0),
+        contentPadding: const EdgeInsets.all(16.0),
         leading: Image.network(imageUrl, width: 80.0),
         title: Text(
           title,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 20.0,
             fontWeight: FontWeight.bold,
           ),
@@ -223,17 +191,17 @@ class CartItemTile extends StatelessWidget {
           children: [
             Text(
               'Price: Rs $priceDouble',
-              style: TextStyle(fontSize: 16.0),
+              style: const TextStyle(fontSize: 16.0),
             ),
             if (quantity != null)
               Text(
                 'Quantity: $quantity',
-                style: TextStyle(fontSize: 16.0),
+                style: const TextStyle(fontSize: 16.0),
               ),
           ],
         ),
         trailing: IconButton(
-          icon: Icon(
+          icon: const Icon(
             Icons.delete,
             color: Colors.red,
           ),
@@ -244,7 +212,7 @@ class CartItemTile extends StatelessWidget {
                 .delete()
                 .then((value) {
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
+                const SnackBar(
                   content: Text('Item removed from Favourites.'),
                   duration: Duration(seconds: 2),
                 ),
@@ -253,7 +221,7 @@ class CartItemTile extends StatelessWidget {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text('Error removing item from Favourites: $error'),
-                  duration: Duration(seconds: 2),
+                  duration: const Duration(seconds: 2),
                 ),
               );
             });

@@ -12,6 +12,7 @@ import 'package:miron/food_items/Burgers.dart';
 import 'package:miron/myOrders.dart';
 import 'package:miron/pages/Review.dart';
 import 'package:miron/pages/firebase_service.dart';
+import 'package:miron/screens/userDrawerHeader.dart';
 import 'package:miron/screens/user_profile.dart';
 import 'package:miron/views/widgets/receipe_card.dart';
 
@@ -59,6 +60,10 @@ class _HomepageState extends State<Homepage> {
   List<Map<String, dynamic>> _foodTypes = [];
   QuerySnapshot? _dealsSnapshot;
 
+  String? userName; // User name
+  String? mobileNumber; // Mobile number
+  String? photoURL; // User profile photo URL
+
   @override
   void initState() {
     super.initState();
@@ -66,6 +71,28 @@ class _HomepageState extends State<Homepage> {
     _animateBackground();
     // Fetch data
     _loadData();
+    _loadUserData(); // Load user data
+  }
+
+  //load user data
+  void _loadUserData() async {
+    // Fetch additional user data from Firestore
+    try {
+      final userData = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user?.uid)
+          .get();
+      if (userData.exists) {
+        final data = userData.data() as Map<String, dynamic>;
+        setState(() {
+          userName = data['userName'];
+          mobileNumber = data['phoneNumber'];
+          photoURL = user?.photoURL;
+        });
+      }
+    } catch (e) {
+      print('Error loading user data: $e');
+    }
   }
 
   // Helper method to animate the background gradient
@@ -96,267 +123,252 @@ class _HomepageState extends State<Homepage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.transparent,
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text(
-          'Café Miron',
-          style: TextStyle(color: Colors.white),
-        ),
-        backgroundColor: Colors.orange,
-      ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.orange,
-              ),
-              child: Center(
-                child: Text(
-                  'Café Miron',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                  ),
-                ),
-              ),
-            ),
-            ListTile(
-              leading: const Icon(Icons.shopping_bag),
-              title: const Text('My Orders'),
-              onTap: () {
-                // Add your navigation logic for My Orders here
-                // For example, Navigator.pushNamed(context, '/my_orders');
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => const MyOrders()));
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.question_answer),
-              title: const Text('FAQ'),
-              onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => FAQPage()));
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.contact_mail),
-              title: const Text('Contact Us'),
-              onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => ContactUsPage()));
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.logout),
-              title: const Text('Logout'),
-              onTap: () {
-                AuthHelper.instance.logout(context);
-              },
-            ),
-          ],
-        ),
-      ),
-      body: AnimatedContainer(
-        duration: _animationDuration,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [_startColor, _endColor],
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          centerTitle: true,
+          title: const Text(
+            'Café Miron',
+            style: TextStyle(color: Colors.white),
           ),
+          backgroundColor: Colors.orange,
         ),
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.only(top: 25),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 15),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [],
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 30,
-                  ),
-                  const Center(
-                    child: Text(
-                      'HOT DEALS',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ),
-                  _dealsSnapshot == null
-                      ? const CircularProgressIndicator()
-                      : CarouselSlider(
-                          options: CarouselOptions(
-                            height: 200,
-                            autoPlay: true,
-                            autoPlayInterval: const Duration(seconds: 3),
-                          ),
-                          items: _dealsSnapshot!.docs.map((deal) {
-                            final imageUrl = deal['imageUrl'] ?? '';
-                            return Image.network(
-                              imageUrl,
-                            );
-                          }).toList(),
-                        ),
-                  const SizedBox(height: 30),
-                  const Center(
-                    child: Text(
-                      'WHAT\'S ON YOUR MIND',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ),
-                  _foodTypes.isEmpty
-                      ? const CircularProgressIndicator()
-                      : GridView.builder(
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            crossAxisSpacing: 10.0,
-                            mainAxisSpacing: 10.0,
-                          ),
-                          itemCount: _foodTypes.length,
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemBuilder: (context, index) {
-                            final recipeData = _foodTypes[index];
-                            final title = recipeData['title'] ?? 'No Title';
-                            final thumbnailUrl =
-                                recipeData['thumbnailUrl'] ?? 'No Thumbnail';
-                            return GestureDetector(
-                              onTap: () {
-                                // Navigate to the corresponding Dart file based on the title
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) {
-                                      if (title == 'Burgers') {
-                                        return BurgerListView();
-                                      } else {
-                                        // Handle other food items here
-                                        // You can create additional if conditions or use a switch statement
-                                        // to navigate to different pages for each food item.
-                                        // Return a default page or show an error message.
-                                        return Container(
-                                          child: Text('Page not found'),
-                                        );
-                                      }
-                                    },
-                                  ),
-                                );
-                              },
-                              child: RecipeCard(
-                                title: title,
-                                thumbnailUrl: thumbnailUrl,
-                                recipeData: recipeData,
-                              ),
-                            );
-                          },
-                        ),
-                ],
+        drawer: Drawer(
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              UserDrawerHeader(
+                user: user,
+                userName: userName,
+                mobileNumber: mobileNumber,
               ),
-            ),
-          ),
-        ),
-      ),
-      bottomNavigationBar: Container(
-        color: Colors.black,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 2),
-          child: GNav(
-            gap: 8,
-            tabBackgroundColor: const Color.fromARGB(255, 251, 139, 64),
-            padding: const EdgeInsets.all(20),
-            tabs: [
-              GButton(
-                icon: Icons.home,
-                iconColor: Colors.orange,
-                iconActiveColor: Colors.white,
-                text: "Home",
-                textColor: Colors.white,
-                onPressed: () {
+              ListTile(
+                leading: const Icon(Icons.person_3_rounded),
+                title: const Text('Edit Profile'),
+                onTap: () {
+                  // Add your navigation logic for My Orders here
+                  // For example, Navigator.pushNamed(context, '/my_orders');
                   Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const Homepage(),
-                    ),
-                  );
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => UserProfileScreen(
+                                userId: user!.uid,
+                              )));
                 },
               ),
-              GButton(
-                icon: Icons.favorite_border_outlined,
-                iconColor: Colors.orange,
-                text: "Favourites",
-                textColor: Colors.white,
-                iconActiveColor: Colors.white,
-                onPressed: () {
+              ListTile(
+                leading: const Icon(Icons.shopping_bag),
+                title: const Text('My Orders'),
+                onTap: () {
+                  // Add your navigation logic for My Orders here
+                  // For example, Navigator.pushNamed(context, '/my_orders');
                   Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => FavPage(),
-                    ),
-                  );
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const MyOrders()));
                 },
               ),
-              GButton(
-                icon: Icons.shopping_cart,
-                iconColor: Colors.orange,
-                text: "Cart",
-                textColor: Colors.white,
-                iconActiveColor: Colors.white,
-                onPressed: () {
-                  Navigator.of(context).push(_createRoute(CartPage()));
+              ListTile(
+                leading: const Icon(Icons.edit_document),
+                title: const Text('Inquiries'),
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => Review()));
                 },
               ),
-              GButton(
-                icon: Icons.edit_document,
-                iconColor: Colors.orange,
-                text: "Inquiries",
-                textColor: Colors.white,
-                iconActiveColor: Colors.white,
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const Review(),
-                    ),
-                  );
+              ListTile(
+                leading: const Icon(Icons.question_answer),
+                title: const Text('FAQ'),
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => FAQPage()));
                 },
               ),
-              GButton(
-                icon: Icons.person,
-                iconColor: Colors.orange,
-                text: "User",
-                textColor: Colors.white,
-                iconActiveColor: Colors.white,
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => UserProfileScreen(
-                        userId: user!.uid,
-                      ),
-                    ),
-                  );
+              ListTile(
+                leading: const Icon(Icons.contact_mail),
+                title: const Text('Contact Us'),
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => ContactUsPage()));
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.logout),
+                title: const Text('Logout'),
+                onTap: () {
+                  AuthHelper.instance.logout(context);
                 },
               ),
             ],
+          ),
+        ),
+        body: AnimatedContainer(
+          duration: _animationDuration,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [_startColor, _endColor],
+            ),
+          ),
+          child: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 25),
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 15),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    const Center(
+                      child: Text(
+                        'HOT DEALS',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                    _dealsSnapshot == null
+                        ? const CircularProgressIndicator()
+                        : CarouselSlider(
+                            options: CarouselOptions(
+                              height: 200,
+                              autoPlay: true,
+                              autoPlayInterval: const Duration(seconds: 3),
+                            ),
+                            items: _dealsSnapshot!.docs.map((deal) {
+                              final imageUrl = deal['imageUrl'] ?? '';
+                              return Image.network(
+                                imageUrl,
+                              );
+                            }).toList(),
+                          ),
+                    const SizedBox(height: 30),
+                    const Center(
+                      child: Text(
+                        'WHAT\'S ON YOUR MIND',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                    _foodTypes.isEmpty
+                        ? const CircularProgressIndicator()
+                        : GridView.builder(
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              crossAxisSpacing: 10.0,
+                              mainAxisSpacing: 10.0,
+                            ),
+                            itemCount: _foodTypes.length,
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemBuilder: (context, index) {
+                              final recipeData = _foodTypes[index];
+                              final title = recipeData['title'] ?? 'No Title';
+                              final thumbnailUrl =
+                                  recipeData['thumbnailUrl'] ?? 'No Thumbnail';
+                              return GestureDetector(
+                                onTap: () {
+                                  // Navigate to the corresponding Dart file based on the title
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) {
+                                        if (title == 'Burgers') {
+                                          return BurgerListView();
+                                        } else {
+                                          // Handle other food items here
+                                          // You can create additional if conditions or use a switch statement
+                                          // to navigate to different pages for each food item.
+                                          // Return a default page or show an error message.
+                                          return Container(
+                                            child: const Text('Page not found'),
+                                          );
+                                        }
+                                      },
+                                    ),
+                                  );
+                                },
+                                child: RecipeCard(
+                                  title: title,
+                                  thumbnailUrl: thumbnailUrl,
+                                  recipeData: recipeData,
+                                ),
+                              );
+                            },
+                          ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+        bottomNavigationBar: Container(
+          color: Colors.black,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 2),
+            child: GNav(
+              gap: 8,
+              tabBackgroundColor: const Color.fromARGB(255, 251, 139, 64),
+              padding: const EdgeInsets.all(20),
+              tabs: [
+                GButton(
+                  icon: Icons.home,
+                  iconColor: Colors.orange,
+                  iconActiveColor: Colors.white,
+                  text: "Home",
+                  textColor: Colors.white,
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const Homepage(),
+                      ),
+                    );
+                  },
+                ),
+                GButton(
+                  icon: Icons.favorite_border_outlined,
+                  iconColor: Colors.orange,
+                  text: "Favourites",
+                  textColor: Colors.white,
+                  iconActiveColor: Colors.white,
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => FavPage(),
+                      ),
+                    );
+                  },
+                ),
+                GButton(
+                  icon: Icons.shopping_cart,
+                  iconColor: Colors.orange,
+                  text: "Cart",
+                  textColor: Colors.white,
+                  iconActiveColor: Colors.white,
+                  onPressed: () {
+                    Navigator.of(context).push(_createRoute(CartPage()));
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),
