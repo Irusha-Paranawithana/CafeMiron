@@ -166,7 +166,12 @@ class _ContactUsPageState extends State<ContactUsPage> {
                   SizedBox(height: 20), // Add spacing
                   ElevatedButton(
                     onPressed: () async {
-                      MapUtils.openMap(81.0090496, 6.3504384);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MapPage(),
+                        ),
+                      );
                     },
                     child: Text('Find Cafe Miron on Google Maps'),
                   ),
