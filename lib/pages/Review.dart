@@ -174,20 +174,18 @@ class _ReviewState extends State<Review> with TickerProviderStateMixin {
         color: Colors.orange,
       ),
       maxLines: maxLines,
+      textInputAction: TextInputAction.next,
       decoration: InputDecoration(
         labelText: labelText,
-        labelStyle: const TextStyle(color: Colors.black, fontSize: 20),
-        enabledBorder: const OutlineInputBorder(
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(
             color: Colors.orange,
             width: 2.0,
           ),
-        ),
-        focusedBorder: const OutlineInputBorder(
-          borderSide: BorderSide(
-            color: Color.fromARGB(255, 251, 139, 64),
-            width: 2.0,
-          ),
+          borderRadius: BorderRadius.circular(10),
         ),
       ),
       validator: validator,

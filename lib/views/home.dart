@@ -148,7 +148,7 @@ class _HomepageState extends State<Homepage> {
                     ),
                   ),
                   const SizedBox(
-                    height: 30,
+                    height: 10,
                   ),
                   const Center(
                     child: Text(
@@ -164,14 +164,18 @@ class _HomepageState extends State<Homepage> {
                       ? const CircularProgressIndicator()
                       : CarouselSlider(
                           options: CarouselOptions(
-                            height: 200,
+                            height: 150,
                             autoPlay: true,
                             autoPlayInterval: const Duration(seconds: 3),
                           ),
                           items: _dealsSnapshot!.docs.map((deal) {
                             final imageUrl = deal['imageUrl'] ?? '';
-                            return Image.network(
-                              imageUrl,
+                            return Card(
+                              //if don't need the box for the add remove the widget Card
+                              elevation: 2,
+                              child: Image.network(
+                                imageUrl,
+                              ),
                             );
                           }).toList(),
                         ),

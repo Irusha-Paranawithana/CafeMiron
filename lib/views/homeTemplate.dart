@@ -68,10 +68,6 @@ class _HomepageState extends State<HomePageTemplate> {
   final FirebaseService _firebaseService = FirebaseService();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // Define initial gradient colors
-  Color _startColor = Colors.white;
-  Color _endColor = Colors.orange;
-
   // Data variables
   List<Map<String, dynamic>> _foodTypes = [];
   QuerySnapshot? _dealsSnapshot;

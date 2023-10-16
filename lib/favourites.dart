@@ -1,13 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:miron/cart.dart';
-import 'package:miron/model/user_profile.dart';
-import 'package:miron/pages/Review.dart';
-import 'package:miron/screens/user_profile.dart';
-
-import 'package:miron/views/home.dart';
 
 class FavPage extends StatefulWidget {
   @override
@@ -15,29 +8,12 @@ class FavPage extends StatefulWidget {
 }
 
 class _FavPageState extends State<FavPage> {
-  User? user = FirebaseAuth.instance.currentUser;
+  User? user = FirebaseAuth.instance.currentUser; // Get the current user
   Color _startColor = Colors.white;
   Color _endColor = Colors.orange;
   Duration _animationDuration = const Duration(seconds: 5);
 
 // Initially select the "Favourites" tab
-
-  @override
-  void initState() {
-    super.initState();
-    _animateBackground();
-  }
-
-  void _animateBackground() async {
-    while (mounted) {
-      setState(() {
-        final temp = _startColor;
-        _startColor = _endColor;
-        _endColor = temp;
-      });
-      await Future.delayed(_animationDuration);
-    }
-  }
 
   @override
   Widget build(BuildContext context) {

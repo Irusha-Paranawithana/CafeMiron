@@ -1,15 +1,9 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:miron/cart.dart';
-import 'package:miron/favourites.dart';
-import 'package:miron/pages/Review.dart';
-import 'package:miron/views/home.dart';
 
 class Product extends StatefulWidget {
   final Map<String, dynamic> burgerData;
-
   Product({required this.burgerData, Key? key}) : super(key: key);
 
   @override
@@ -17,33 +11,6 @@ class Product extends StatefulWidget {
 }
 
 class _ProductState extends State<Product> {
-  Color _startColor = Colors.white;
-  Color _endColor = Colors.orange;
-
-  // Animation duration
-  Duration _animationDuration = const Duration(seconds: 5);
-
-  @override
-  void initState() {
-    super.initState();
-    // Start the animation
-    _animateBackground();
-  }
-
-  void _animateBackground() async {
-    while (mounted) {
-      // Swap start and end colors
-      setState(() {
-        final temp = _startColor;
-        _startColor = _endColor;
-        _endColor = temp;
-      });
-
-      // Wait for the specified duration
-      await Future.delayed(_animationDuration);
-    }
-  }
-
   int quantity = 1;
 
   Future<void> addToCart(int quantity) async {
@@ -59,22 +26,54 @@ class _ProductState extends State<Product> {
       "price": widget.burgerData['price'],
       "imageUrl": widget.burgerData['imageUrl'],
       "quantity": quantity, // Include quantity in the data
-    }).then((value) => print("Added to Cart"));
+    }).then((value) {
+      print('Added to Cart'); // Print a message to the console
+      // Show a SnackBar to confirm the item has been added to the cart
+      final snackBar = const SnackBar(
+        content: Text('Added to Cart'),
+        duration: Duration(seconds: 2), // Adjust the duration as needed
+        backgroundColor: Colors.orange,
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    });
   }
 
   Future<void> addToFav() async {
     CollectionReference _collectionRef =
         FirebaseFirestore.instance.collection("Favourites");
 
-    // Generate a new document ID for the cart item
-    String favId = _collectionRef.doc().id;
+    // Check if the item is already in favorites
+    QuerySnapshot querySnapshot = await _collectionRef
+        .where("title", isEqualTo: widget.burgerData['title'])
+        .limit(1)
+        .get();
 
-    // Add data to the "cartItems" collection with the generated document ID
-    return _collectionRef.doc(favId).set({
-      "title": widget.burgerData['title'],
-      "price": widget.burgerData['price'],
-      "imageUrl": widget.burgerData['imageUrl'],
-    }).then((value) => print("Added to Favourites"));
+    if (querySnapshot.docs.isNotEmpty) {
+      // Item is already in favorites, show a snackbar
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Item is already in Favorites'),
+          duration: Duration(seconds: 2), // Adjust the duration as needed
+          backgroundColor: Colors.orange,
+        ),
+      );
+    } else {
+      // Item is not in favorites, add it
+      String favId = _collectionRef.doc().id;
+      await _collectionRef.doc(favId).set({
+        "title": widget.burgerData['title'],
+        "price": widget.burgerData['price'],
+        "imageUrl": widget.burgerData['imageUrl'],
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Added to Favorites'),
+          duration: Duration(seconds: 2), // Adjust the duration as needed
+          backgroundColor: Colors.orange,
+        ),
+      );
+    }
   }
 
   @override
@@ -86,6 +85,7 @@ class _ProductState extends State<Product> {
 
     return SafeArea(
       child: Scaffold(
+          backgroundColor: Colors.white,
           appBar: AppBar(
             centerTitle: true,
             title: const Text(
@@ -94,75 +94,33 @@ class _ProductState extends State<Product> {
             ), // Set app bar title
             backgroundColor: Colors.orange, // Set app bar background color
           ),
-          body: AnimatedContainer(
-            // Wrap the content with AnimatedContainer
-            duration: _animationDuration,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [_startColor, _endColor], // Use the animated colors
-              ),
-            ),
-            child: Column(
-              children: [
-                Stack(
-                  children: [
-                    SizedBox(
-                      width: double.infinity,
-                      child: Image.network(imageUrl),
+          body: Column(
+            children: [
+              Stack(
+                children: [
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height / 2.5,
+                    width: double.infinity,
+                    child: Image.network(
+                      imageUrl,
+                      fit: BoxFit.cover,
                     ),
-                    buttonArrow(context),
-                  ],
-                ),
-                Expanded(
-                  child: scroll(title, price, description),
-                ),
-              ],
-            ),
+                  ),
+                ],
+              ),
+              Expanded(
+                child: scroll(title, price, description),
+              ),
+            ],
           )),
-    );
-  }
-
-  Widget buttonArrow(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(20.0),
-      child: InkWell(
-        onTap: () {
-          Navigator.pop(context); // Return to the previous screen
-        },
-        child: Container(
-          clipBehavior: Clip.hardEdge,
-          height: 55,
-          width: 55,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(25),
-          ),
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-            child: Container(
-              height: 55,
-              width: 55,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(25),
-              ),
-              child: const Icon(
-                Icons.arrow_back_ios,
-                size: 20,
-                color: Colors.orange,
-              ),
-            ),
-          ),
-        ),
-      ),
     );
   }
 
   Widget scroll(String title, String price, String description) {
     return DraggableScrollableSheet(
-      initialChildSize: 0.6,
+      initialChildSize: 1.0,
       maxChildSize: 1.0,
-      minChildSize: 0.6,
+      minChildSize: 1.0,
       builder: (context, ScrollController) {
         return Container(
           padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -187,7 +145,7 @@ class _ProductState extends State<Product> {
                       Container(
                         height: 5,
                         width: 35,
-                        color: Colors.black,
+                        color: Colors.white,
                       ),
                     ],
                   ),
@@ -209,7 +167,7 @@ class _ProductState extends State<Product> {
                 Row(
                   children: [
                     Text(
-                      'Rs ' + price,
+                      'Rs. ' + price,
                       style: const TextStyle(
                         fontSize: 25,
                         fontWeight: FontWeight.bold,
@@ -219,7 +177,7 @@ class _ProductState extends State<Product> {
                   ],
                 ),
                 const SizedBox(
-                  height: 60,
+                  height: 30,
                 ),
                 const Text(
                   "Description",
@@ -238,21 +196,19 @@ class _ProductState extends State<Product> {
                   style: const TextStyle(color: Colors.white, fontSize: 20),
                 ),
                 const SizedBox(
-                  height: 20,
+                  height: 10,
                 ),
-                Container(
-                  width: 150,
-                  padding:
-                      const EdgeInsets.all(3.0), // Add padding to the container
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(
-                        5.0), // Add rounded corners to the rectangle
-                    color: Colors.orange, // Set the background color
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      IconButton(
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Container(
+                      width: 40,
+                      height: 40, // Set width and height to make it round
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle, // Make it a circle
+                        color: Colors.orange,
+                      ),
+                      child: IconButton(
                         onPressed: () {
                           if (quantity > 1) {
                             setState(() {
@@ -262,15 +218,36 @@ class _ProductState extends State<Product> {
                         },
                         icon: const Icon(
                           Icons.remove,
-                          color: Colors.white, // Set the color to orange
+                          color: Colors.white,
                         ),
                       ),
-                      Text(
+                    ),
+                    const SizedBox(
+                      width: 20,
+                    ),
+                    Container(
+                      width: 25,
+                      alignment: Alignment.center,
+                      child: Text(
                         quantity.toString(),
-                        style:
-                            const TextStyle(fontSize: 20, color: Colors.white),
+                        style: const TextStyle(
+                          fontSize: 20,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                      IconButton(
+                    ),
+                    const SizedBox(
+                      width: 20,
+                    ),
+                    Container(
+                      width: 40,
+                      height: 40, // Set width and height to make it round
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle, // Make it a circle
+                        color: Colors.orange,
+                      ),
+                      child: IconButton(
                         onPressed: () {
                           setState(() {
                             quantity++;
@@ -278,11 +255,11 @@ class _ProductState extends State<Product> {
                         },
                         icon: const Icon(
                           Icons.add,
-                          color: Colors.white, // Set the color to orange
+                          color: Colors.white,
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 20),
                 Row(

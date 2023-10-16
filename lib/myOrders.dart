@@ -54,7 +54,7 @@ class _MyOrdersState extends State<MyOrders> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text(
+        title: const Text(
           'Café Miron',
           style: TextStyle(color: Colors.white),
         ),
@@ -62,7 +62,7 @@ class _MyOrdersState extends State<MyOrders> {
       ),
       body: SafeArea(
         child: Padding(
-          padding: EdgeInsets.all(20),
+          padding: const EdgeInsets.all(20),
           child: Center(
             child: Column(
               children: [
@@ -75,7 +75,7 @@ class _MyOrdersState extends State<MyOrders> {
                           builder: (context) => OrderHistoryPage()),
                     );
                   },
-                  child: Text(
+                  child: const Text(
                     'View Order History',
                     style: TextStyle(
                       color: Colors.blue, // You can customize the link's color
@@ -84,11 +84,11 @@ class _MyOrdersState extends State<MyOrders> {
                     ),
                   ),
                 ),
-                SizedBox(height: 20), // Add spacing
+                const SizedBox(height: 20), // Add spacing
                 _orders == null
-                    ? CircularProgressIndicator()
+                    ? const CircularProgressIndicator()
                     : _orders!.isEmpty
-                        ? Text('No orders available')
+                        ? const Text('No orders available')
                         : Expanded(
                             child: ListView.builder(
                               itemCount: _orders!.length,
@@ -106,12 +106,13 @@ class _MyOrdersState extends State<MyOrders> {
 
                                 return Card(
                                   elevation: 3,
-                                  margin: EdgeInsets.symmetric(vertical: 10),
+                                  margin:
+                                      const EdgeInsets.symmetric(vertical: 10),
                                   child: ListTile(
-                                    contentPadding: EdgeInsets.all(20),
+                                    contentPadding: const EdgeInsets.all(20),
                                     title: Text(
                                       'Item: $title',
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 18,
                                       ),
@@ -122,25 +123,25 @@ class _MyOrdersState extends State<MyOrders> {
                                       children: [
                                         Text(
                                           'Quantity: $quantity',
-                                          style: TextStyle(fontSize: 16),
+                                          style: const TextStyle(fontSize: 16),
                                         ),
                                         Text(
                                           'Price: \$${price.toStringAsFixed(2)}',
-                                          style: TextStyle(fontSize: 16),
+                                          style: const TextStyle(fontSize: 16),
                                         ),
                                         Text(
                                           'Total Price: \$${total.toStringAsFixed(2)}',
-                                          style: TextStyle(fontSize: 16),
+                                          style: const TextStyle(fontSize: 16),
                                         ),
                                         Text(
                                           'Delivery Option: $deliveryOption', // Display the delivery option
-                                          style: TextStyle(fontSize: 16),
+                                          style: const TextStyle(fontSize: 16),
                                         ),
                                         Text(
                                           'Order Status: $orderStatus', // Display the status
-                                          style: TextStyle(fontSize: 16),
+                                          style: const TextStyle(fontSize: 16),
                                         ),
-                                        SizedBox(height: 8),
+                                        const SizedBox(height: 8),
                                         Image.network(
                                           imageUrl,
                                           width: 100,
@@ -155,18 +156,18 @@ class _MyOrdersState extends State<MyOrders> {
                                           context: context,
                                           builder: (BuildContext context) {
                                             return AlertDialog(
-                                              title: Text('Cancel Order'),
-                                              content: Text(
+                                              title: const Text('Cancel Order'),
+                                              content: const Text(
                                                   'Are you sure you want to cancel this order?'),
                                               actions: <Widget>[
                                                 TextButton(
-                                                  child: Text('No'),
+                                                  child: const Text('No'),
                                                   onPressed: () {
                                                     Navigator.of(context).pop();
                                                   },
                                                 ),
                                                 TextButton(
-                                                  child: Text('Yes'),
+                                                  child: const Text('Yes'),
                                                   onPressed: () async {
                                                     // Get the orderId of the order to be canceled
                                                     final orderId =
@@ -193,7 +194,7 @@ class _MyOrdersState extends State<MyOrders> {
                                           },
                                         );
                                       },
-                                      child: Text('Cancel Order'),
+                                      child: const Text('Cancel Order'),
                                     ),
                                   ),
                                 );
