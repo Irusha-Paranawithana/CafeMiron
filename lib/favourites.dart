@@ -42,69 +42,7 @@ class _FavPageState extends State<FavPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text(
-          'Café Miron ',
-          style: TextStyle(
-            color: Colors.white,
-          ),
-        ),
-        backgroundColor: Colors.orange,
-        elevation: 0, // Remove app bar shadow
-      ),
       body: CartItemList(), // Place CartItemList in the body
-      bottomNavigationBar: Container(
-        color: Colors.grey.shade900, // Set background color to white
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 2),
-          child: GNav(
-            gap: 8,
-            tabBackgroundColor: Colors.orange,
-            padding: const EdgeInsets.all(20),
-            tabs: [
-              GButton(
-                icon: Icons.home,
-                iconColor: Colors.orange,
-                iconActiveColor: Colors.white,
-                text: "Home",
-                textColor: Colors.white,
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const Homepage(),
-                    ),
-                  );
-                },
-              ),
-              GButton(
-                icon: Icons.favorite_border_outlined,
-                iconColor: Colors.orange,
-                text: "Favourites",
-                textColor: Colors.white,
-                iconActiveColor: Colors.white,
-                onPressed: () {},
-              ),
-              GButton(
-                icon: Icons.shopping_cart,
-                iconColor: Colors.orange,
-                text: "Cart",
-                textColor: Colors.white,
-                iconActiveColor: Colors.white,
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => CartPage(),
-                    ),
-                  );
-                },
-              ),
-            ],
-          ),
-        ),
-      ),
     );
   }
 }

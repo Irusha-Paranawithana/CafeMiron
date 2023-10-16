@@ -69,17 +69,6 @@ class _CartPageState extends State<CartPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text(
-          'Café Miron ',
-          style: TextStyle(
-            color: Colors.white,
-          ),
-        ),
-        backgroundColor: Colors.orange,
-        elevation: 0,
-      ),
       body: AnimatedContainer(
         duration: _animationDuration,
         decoration: BoxDecoration(
@@ -93,64 +82,6 @@ class _CartPageState extends State<CartPage> {
           children: [
             Expanded(child: CartItemList()),
           ],
-        ),
-      ),
-      bottomNavigationBar: Container(
-        color: Colors.black,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 2),
-          child: GNav(
-            gap: 8,
-            tabBackgroundColor: Colors.orange,
-            padding: const EdgeInsets.all(15),
-            tabs: [
-              GButton(
-                icon: Icons.home,
-                iconColor: Colors.orange,
-                iconActiveColor: Colors.white,
-                text: "Home",
-                textColor: Colors.white,
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const Homepage(),
-                    ),
-                  );
-                },
-              ),
-              GButton(
-                icon: Icons.favorite_border_outlined,
-                iconColor: Colors.orange,
-                textColor: Colors.white,
-                text: "Favourites",
-                iconActiveColor: Colors.white,
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => FavPage(),
-                    ),
-                  );
-                },
-              ),
-              GButton(
-                icon: Icons.shopping_cart,
-                iconColor: Colors.orange,
-                text: "Cart",
-                textColor: Colors.white,
-                iconActiveColor: Colors.white,
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => CartPage(),
-                    ),
-                  );
-                },
-              ),
-            ],
-          ),
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(

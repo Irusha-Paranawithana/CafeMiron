@@ -21,7 +21,7 @@ class _ProductState extends State<Product> {
   Color _endColor = Colors.orange;
 
   // Animation duration
-  Duration _animationDuration = Duration(seconds: 5);
+  Duration _animationDuration = const Duration(seconds: 5);
 
   @override
   void initState() {
@@ -86,122 +86,41 @@ class _ProductState extends State<Product> {
 
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          title: Text(
-            'Café Miron',
-            style: TextStyle(color: Colors.white),
-          ), // Set app bar title
-          backgroundColor: Colors.orange, // Set app bar background color
-        ),
-        body: AnimatedContainer(
-          // Wrap the content with AnimatedContainer
-          duration: _animationDuration,
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [_startColor, _endColor], // Use the animated colors
+          appBar: AppBar(
+            centerTitle: true,
+            title: const Text(
+              'Café Miron',
+              style: TextStyle(color: Colors.white),
+            ), // Set app bar title
+            backgroundColor: Colors.orange, // Set app bar background color
+          ),
+          body: AnimatedContainer(
+            // Wrap the content with AnimatedContainer
+            duration: _animationDuration,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [_startColor, _endColor], // Use the animated colors
+              ),
             ),
-          ),
-          child: Column(
-            children: [
-              Stack(
-                children: [
-                  SizedBox(
-                    width: double.infinity,
-                    child: Image.network(imageUrl),
-                  ),
-                  buttonArrow(context),
-                ],
-              ),
-              Expanded(
-                child: scroll(title, price, description),
-              ),
-            ],
-          ),
-        ),
-        bottomNavigationBar: Container(
-          color: Colors.black,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 2),
-            child: GNav(
-              gap: 8,
-              tabBackgroundColor: Color.fromARGB(255, 251, 139, 64),
-              padding: EdgeInsets.all(20),
-              tabs: [
-                GButton(
-                  icon: Icons.home,
-                  iconColor: Color.fromARGB(255, 251, 139, 64),
-                  iconActiveColor: Colors.white,
-                  text: "Home",
-                  textColor: Colors.white,
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const Homepage(),
-                      ),
-                    );
-                  },
+            child: Column(
+              children: [
+                Stack(
+                  children: [
+                    SizedBox(
+                      width: double.infinity,
+                      child: Image.network(imageUrl),
+                    ),
+                    buttonArrow(context),
+                  ],
                 ),
-                GButton(
-                  icon: Icons.favorite_border_outlined,
-                  iconColor: Color.fromARGB(255, 251, 139, 64),
-                  text: "Favourites",
-                  textColor: Colors.white,
-                  iconActiveColor: Colors.white,
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => FavPage(),
-                      ),
-                    );
-                  },
-                ),
-                GButton(
-                  icon: Icons.shopping_cart,
-                  iconColor: Color.fromARGB(255, 251, 139, 64),
-                  text: "Cart",
-                  textColor: Colors.white,
-                  iconActiveColor: Colors.white,
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => CartPage(),
-                      ),
-                    );
-                  },
-                ),
-                GButton(
-                  icon: Icons.edit_document,
-                  iconColor: Color.fromARGB(255, 251, 139, 64),
-                  text: "Inquiries",
-                  textColor: Colors.white,
-                  iconActiveColor: Colors.white,
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => Review(),
-                      ),
-                    );
-                  },
-                ),
-                GButton(
-                  icon: Icons.person,
-                  iconColor: Color.fromARGB(255, 251, 139, 64),
-                  text: "User",
-                  textColor: Colors.white,
-                  iconActiveColor: Colors.white,
+                Expanded(
+                  child: scroll(title, price, description),
                 ),
               ],
             ),
-          ),
-        ),
-      ),
+          )),
     );
   }
 
@@ -227,7 +146,7 @@ class _ProductState extends State<Product> {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(25),
               ),
-              child: Icon(
+              child: const Icon(
                 Icons.arrow_back_ios,
                 size: 20,
                 color: Colors.orange,
@@ -246,11 +165,11 @@ class _ProductState extends State<Product> {
       minChildSize: 0.6,
       builder: (context, ScrollController) {
         return Container(
-          padding: EdgeInsets.symmetric(horizontal: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 20),
           clipBehavior: Clip.hardEdge,
           decoration: BoxDecoration(
             color: Colors.grey.shade900,
-            borderRadius: BorderRadius.only(
+            borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(20),
               topRight: Radius.circular(20),
             ),
@@ -275,7 +194,7 @@ class _ProductState extends State<Product> {
                 ),
                 Text(
                   title,
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.orange,
                     fontSize: 40,
                     fontWeight: FontWeight.bold,
@@ -284,14 +203,14 @@ class _ProductState extends State<Product> {
                 const SizedBox(
                   height: 10,
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 50,
                 ),
                 Row(
                   children: [
                     Text(
                       'Rs ' + price,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 25,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
@@ -299,10 +218,10 @@ class _ProductState extends State<Product> {
                     ),
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 60,
                 ),
-                Text(
+                const Text(
                   "Description",
                   style: TextStyle(
                     color: Colors.white,
@@ -311,19 +230,20 @@ class _ProductState extends State<Product> {
                     decoration: TextDecoration.underline,
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 Text(
                   description,
-                  style: TextStyle(color: Colors.white, fontSize: 20),
+                  style: const TextStyle(color: Colors.white, fontSize: 20),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 Container(
                   width: 150,
-                  padding: EdgeInsets.all(3.0), // Add padding to the container
+                  padding:
+                      const EdgeInsets.all(3.0), // Add padding to the container
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(
                         5.0), // Add rounded corners to the rectangle
@@ -340,14 +260,15 @@ class _ProductState extends State<Product> {
                             });
                           }
                         },
-                        icon: Icon(
+                        icon: const Icon(
                           Icons.remove,
                           color: Colors.white, // Set the color to orange
                         ),
                       ),
                       Text(
                         quantity.toString(),
-                        style: TextStyle(fontSize: 20, color: Colors.white),
+                        style:
+                            const TextStyle(fontSize: 20, color: Colors.white),
                       ),
                       IconButton(
                         onPressed: () {
@@ -355,7 +276,7 @@ class _ProductState extends State<Product> {
                             quantity++;
                           });
                         },
-                        icon: Icon(
+                        icon: const Icon(
                           Icons.add,
                           color: Colors.white, // Set the color to orange
                         ),
@@ -363,25 +284,25 @@ class _ProductState extends State<Product> {
                     ],
                   ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Row(
                   children: [
                     ElevatedButton.icon(
                       onPressed: () => addToCart(quantity),
-                      icon: Icon(Icons.shopping_cart),
-                      label: Text("Add To Cart"),
+                      icon: const Icon(Icons.shopping_cart),
+                      label: const Text("Add To Cart"),
                       style: ElevatedButton.styleFrom(
                         primary:
                             Colors.green, // Set the background color to green
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 15,
                     ),
                     ElevatedButton.icon(
                       onPressed: () => addToFav(),
-                      icon: Icon(Icons.favorite),
-                      label: Text("Add To Favourites"),
+                      icon: const Icon(Icons.favorite),
+                      label: const Text("Add To Favourites"),
                       style: ElevatedButton.styleFrom(
                         primary:
                             Colors.red, // Set the background color to green
