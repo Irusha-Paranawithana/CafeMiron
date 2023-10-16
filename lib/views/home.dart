@@ -10,6 +10,7 @@ import 'package:miron/faq.dart';
 import 'package:miron/favourites.dart';
 import 'package:miron/food_items/Burgers.dart';
 import 'package:miron/model/confirmationDialog.dart';
+import 'package:miron/model/drawer.dart';
 import 'package:miron/myOrders.dart';
 import 'package:miron/pages/Review.dart';
 import 'package:miron/pages/firebase_service.dart';
@@ -135,92 +136,12 @@ class _HomepageState extends State<Homepage> {
           ),
           backgroundColor: Colors.orange,
         ),
-        drawer: Drawer(
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: [
-              UserDrawerHeader(
-                user: user,
-                userName: userName,
-                mobileNumber: mobileNumber,
-              ),
-              ListTile(
-                leading: const Icon(Icons.person_3_rounded),
-                title: const Text('Edit Profile'),
-                onTap: () {
-                  // Add your navigation logic for My Orders here
-                  // For example, Navigator.pushNamed(context, '/my_orders');
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => UserProfileScreen(
-                                userId: user!.uid,
-                              )));
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.shopping_bag),
-                title: const Text('My Orders'),
-                onTap: () {
-                  // Add your navigation logic for My Orders here
-                  // For example, Navigator.pushNamed(context, '/my_orders');
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const MyOrders()));
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.edit_document),
-                title: const Text('Inquiries'),
-                onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => Review()));
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.question_answer),
-                title: const Text('FAQ'),
-                onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => FAQPage()));
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.contact_mail),
-                title: const Text('Contact Us'),
-                onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => ContactUsPage()));
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.power_settings_new),
-                title: const Text('Logout'),
-                onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return ConfirmationDialog(
-                        title: 'Logout Confirmation',
-                        content: 'Are you sure you want to logout?',
-                        confirmText: 'Yes, Logout',
-                        cancelText: 'Cancel',
-                        onConfirm: () {
-                          // Perform the logout action here
-                          AuthHelper.instance.logout(context);
-                        },
-                        onCancel: () {
-                          Navigator.of(context).pop(); // Close the dialog
-                        },
-                      );
-                    },
-                  );
-                },
-              ),
-            ],
-          ),
+        drawer: AppDrawer(
+          user: user,
+          userName: userName, // Pass userName
+          mobileNumber: mobileNumber, // Pass mobileNumber
         ),
+
         body: AnimatedContainer(
           duration: _animationDuration,
           decoration: BoxDecoration(
@@ -336,59 +257,59 @@ class _HomepageState extends State<Homepage> {
             ),
           ),
         ),
-        bottomNavigationBar: Container(
-          color: Colors.black,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 2),
-            child: GNav(
-              gap: 8,
-              tabBackgroundColor: const Color.fromARGB(255, 251, 139, 64),
-              padding: const EdgeInsets.all(20),
-              tabs: [
-                GButton(
-                  icon: Icons.home,
-                  iconColor: Colors.orange,
-                  iconActiveColor: Colors.white,
-                  text: "Home",
-                  textColor: Colors.white,
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const Homepage(),
-                      ),
-                    );
-                  },
-                ),
-                GButton(
-                  icon: Icons.favorite_border_outlined,
-                  iconColor: Colors.orange,
-                  text: "Favourites",
-                  textColor: Colors.white,
-                  iconActiveColor: Colors.white,
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => FavPage(),
-                      ),
-                    );
-                  },
-                ),
-                GButton(
-                  icon: Icons.shopping_cart,
-                  iconColor: Colors.orange,
-                  text: "Cart",
-                  textColor: Colors.white,
-                  iconActiveColor: Colors.white,
-                  onPressed: () {
-                    Navigator.of(context).push(_createRoute(CartPage()));
-                  },
-                ),
-              ],
-            ),
-          ),
-        ),
+        //   bottomNavigationBar: Container(
+        //     color: Colors.black,
+        //     child: Padding(
+        //       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 2),
+        //       child: GNav(
+        //         gap: 8,
+        //         tabBackgroundColor: const Color.fromARGB(255, 251, 139, 64),
+        //         padding: const EdgeInsets.all(20),
+        //         tabs: [
+        //           GButton(
+        //             icon: Icons.home,
+        //             iconColor: Colors.orange,
+        //             iconActiveColor: Colors.white,
+        //             text: "Home",
+        //             textColor: Colors.white,
+        //             onPressed: () {
+        //               Navigator.push(
+        //                 context,
+        //                 MaterialPageRoute(
+        //                   builder: (context) => const Homepage(),
+        //                 ),
+        //               );
+        //             },
+        //           ),
+        //           GButton(
+        //             icon: Icons.favorite_border_outlined,
+        //             iconColor: Colors.orange,
+        //             text: "Favourites",
+        //             textColor: Colors.white,
+        //             iconActiveColor: Colors.white,
+        //             onPressed: () {
+        //               Navigator.push(
+        //                 context,
+        //                 MaterialPageRoute(
+        //                   builder: (context) => FavPage(),
+        //                 ),
+        //               );
+        //             },
+        //           ),
+        //           GButton(
+        //             icon: Icons.shopping_cart,
+        //             iconColor: Colors.orange,
+        //             text: "Cart",
+        //             textColor: Colors.white,
+        //             iconActiveColor: Colors.white,
+        //             onPressed: () {
+        //               Navigator.of(context).push(_createRoute(CartPage()));
+        //             },
+        //           ),
+        //         ],
+        //       ),
+        //     ),
+        //   ),
       ),
     );
   }
