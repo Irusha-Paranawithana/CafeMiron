@@ -9,6 +9,7 @@ import 'package:miron/contact.dart';
 import 'package:miron/faq.dart';
 import 'package:miron/favourites.dart';
 import 'package:miron/food_items/Burgers.dart';
+import 'package:miron/model/confirmationDialog.dart';
 import 'package:miron/myOrders.dart';
 import 'package:miron/pages/Review.dart';
 import 'package:miron/pages/firebase_service.dart';
@@ -194,10 +195,27 @@ class _HomepageState extends State<Homepage> {
                 },
               ),
               ListTile(
-                leading: const Icon(Icons.logout),
+                leading: const Icon(Icons.power_settings_new),
                 title: const Text('Logout'),
                 onTap: () {
-                  AuthHelper.instance.logout(context);
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return ConfirmationDialog(
+                        title: 'Logout Confirmation',
+                        content: 'Are you sure you want to logout?',
+                        confirmText: 'Yes, Logout',
+                        cancelText: 'Cancel',
+                        onConfirm: () {
+                          // Perform the logout action here
+                          AuthHelper.instance.logout(context);
+                        },
+                        onCancel: () {
+                          Navigator.of(context).pop(); // Close the dialog
+                        },
+                      );
+                    },
+                  );
                 },
               ),
             ],
