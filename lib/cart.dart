@@ -14,12 +14,9 @@ class CartPage extends StatefulWidget {
 class _CartPageState extends State<CartPage> {
   Color _startColor = Colors.white;
   Color _endColor = Colors.orange;
-  Duration _animationDuration = Duration(seconds: 5);
+  Duration _animationDuration = const Duration(seconds: 5);
   final DatabaseReference _databaseRef = FirebaseDatabase.instance.reference();
   List<QueryDocumentSnapshot>? cartItems;
-
-  // Declare a variable to hold the selected delivery option
-  String selectedDeliveryOption = 'TakeAway'; // Set your default value here
 
   @override
   void initState() {
@@ -69,17 +66,6 @@ class _CartPageState extends State<CartPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text(
-          'Café Miron ',
-          style: TextStyle(
-            color: Colors.white,
-          ),
-        ),
-        backgroundColor: Colors.orange,
-        elevation: 0,
-      ),
       body: AnimatedContainer(
         duration: _animationDuration,
         decoration: BoxDecoration(
@@ -89,73 +75,15 @@ class _CartPageState extends State<CartPage> {
             colors: [_startColor, _endColor],
           ),
         ),
-        child: Column(
+        child: const Column(
           children: [
             Expanded(child: CartItemList()),
           ],
         ),
       ),
-      bottomNavigationBar: Container(
-        color: Colors.black,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 2),
-          child: GNav(
-            gap: 8,
-            tabBackgroundColor: Colors.orange,
-            padding: const EdgeInsets.all(15),
-            tabs: [
-              GButton(
-                icon: Icons.home,
-                iconColor: Colors.orange,
-                iconActiveColor: Colors.white,
-                text: "Home",
-                textColor: Colors.white,
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const Homepage(),
-                    ),
-                  );
-                },
-              ),
-              GButton(
-                icon: Icons.favorite_border_outlined,
-                iconColor: Colors.orange,
-                textColor: Colors.white,
-                text: "Favourites",
-                iconActiveColor: Colors.white,
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => FavPage(),
-                    ),
-                  );
-                },
-              ),
-              GButton(
-                icon: Icons.shopping_cart,
-                iconColor: Colors.orange,
-                text: "Cart",
-                textColor: Colors.white,
-                iconActiveColor: Colors.white,
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => CartPage(),
-                    ),
-                  );
-                },
-              ),
-            ],
-          ),
-        ),
-      ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          _showDeliveryOptionDialog();
+          placeOrder();
         },
         label: const Text('Place the Order'),
         icon: const Icon(Icons.shopping_bag),
@@ -166,8 +94,8 @@ class _CartPageState extends State<CartPage> {
         Padding(
           padding: const EdgeInsets.all(16.0),
           child: Text(
-            'Final Cart Price: \$${calculateFinalCartPrice().toStringAsFixed(2)}',
-            style: TextStyle(
+            'Final Cart Price: \Rs${calculateFinalCartPrice().toStringAsFixed(2)}',
+            style: const TextStyle(
               fontSize: 18.0,
               fontWeight: FontWeight.bold,
             ),
@@ -192,98 +120,30 @@ class _CartPageState extends State<CartPage> {
         // Generate a new order ID
         String? orderId = _databaseRef.child("Orders").push().key;
 
-        // Include order ID and selected delivery option in cart item data
+        // Include orderid in cart item data
         Map<String, dynamic> orderData = {
           "orderid": orderId,
           "title": title,
           "price": price,
           "imageUrl": imageUrl,
           "quantity": quantity,
-          "deliveryOption": selectedDeliveryOption,
-          "orderStatus": "Pending"
         };
 
         try {
-          // Upload the cart item with order ID to the Realtime Database under "Orders"
+          // Upload the cart item with orderid to the Realtime Database under "Orders"
           await _databaseRef.child("Orders").child(orderId!).set(orderData);
-
-          // Upload the order data to Firestore in the 'History' collection
-          await FirebaseFirestore.instance
-              .collection('History')
-              .doc(orderId)
-              .set(orderData);
+          print("Order Placed");
 
           // Delete the cart item from Firestore
           await FirebaseFirestore.instance
               .collection('cartItems')
               .doc(item.id)
               .delete();
-          print("Order Placed");
         } catch (error) {
           print("Error placing order: $error");
         }
       }
     }
-  }
-
-  Future<void> _showDeliveryOptionDialog() async {
-    await showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Select Delivery Option"),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              ElevatedButton(
-                onPressed: () {
-                  placeOrder();
-                  setState(() {
-                    selectedDeliveryOption = 'TakeAway';
-                  });
-                  Navigator.of(context).pop();
-                  // Show a success alert here
-                  showOrderPlacedAlert();
-                },
-                child: Text("Takeaway"),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  placeOrder();
-                  setState(() {
-                    selectedDeliveryOption = 'Cash on Delivery';
-                  });
-                  Navigator.of(context).pop();
-                  // Show a success alert here
-                  showOrderPlacedAlert();
-                },
-                child: Text("Cash on Delivery"),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  void showOrderPlacedAlert() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Order Placed Successfully"),
-          content: Text("Your order has been placed successfully."),
-          actions: <Widget>[
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text("OK"),
-            ),
-          ],
-        );
-      },
-    );
   }
 
   Future<void> addToCart(
@@ -375,11 +235,11 @@ class CartItemTile extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       child: ListTile(
-        contentPadding: EdgeInsets.all(16.0),
+        contentPadding: const EdgeInsets.all(16.0),
         leading: Image.network(imageUrl, width: 80.0),
         title: Text(
           title,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 20.0,
             fontWeight: FontWeight.bold,
           ),
@@ -389,14 +249,14 @@ class CartItemTile extends StatelessWidget {
           children: [
             Text(
               'Price: \$${priceDouble.toStringAsFixed(2)}',
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 16.0,
                 color: Colors.black87,
               ),
             ),
             Text(
               'Quantity: $quantity',
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 16.0,
                 color: Colors.black87,
               ),
@@ -404,7 +264,7 @@ class CartItemTile extends StatelessWidget {
           ],
         ),
         trailing: IconButton(
-          icon: Icon(
+          icon: const Icon(
             Icons.delete,
             color: Colors.red,
           ),
@@ -415,7 +275,7 @@ class CartItemTile extends StatelessWidget {
                 .delete()
                 .then((value) {
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
+                const SnackBar(
                   content: Text('Item removed from cart.'),
                   duration: Duration(seconds: 2),
                 ),
@@ -424,7 +284,7 @@ class CartItemTile extends StatelessWidget {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text('Error removing item from cart: $error'),
-                  duration: Duration(seconds: 2),
+                  duration: const Duration(seconds: 2),
                 ),
               );
             });

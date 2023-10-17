@@ -1,13 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:miron/cart.dart';
-import 'package:miron/model/user_profile.dart';
-import 'package:miron/pages/Review.dart';
-import 'package:miron/screens/user_profile.dart';
-
-import 'package:miron/views/home.dart';
 
 class FavPage extends StatefulWidget {
   @override
@@ -15,7 +8,7 @@ class FavPage extends StatefulWidget {
 }
 
 class _FavPageState extends State<FavPage> {
-  User? user = FirebaseAuth.instance.currentUser;
+  User? user = FirebaseAuth.instance.currentUser; // Get the current user
   Color _startColor = Colors.white;
   Color _endColor = Colors.orange;
   Duration _animationDuration = const Duration(seconds: 5);
@@ -23,88 +16,9 @@ class _FavPageState extends State<FavPage> {
 // Initially select the "Favourites" tab
 
   @override
-  void initState() {
-    super.initState();
-    _animateBackground();
-  }
-
-  void _animateBackground() async {
-    while (mounted) {
-      setState(() {
-        final temp = _startColor;
-        _startColor = _endColor;
-        _endColor = temp;
-      });
-      await Future.delayed(_animationDuration);
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text(
-          'Café Miron ',
-          style: TextStyle(
-            color: Colors.white,
-          ),
-        ),
-        backgroundColor: Colors.orange,
-        elevation: 0, // Remove app bar shadow
-      ),
       body: CartItemList(), // Place CartItemList in the body
-      bottomNavigationBar: Container(
-        color: Colors.grey.shade900, // Set background color to white
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 2),
-          child: GNav(
-            gap: 8,
-            tabBackgroundColor: Colors.orange,
-            padding: const EdgeInsets.all(20),
-            tabs: [
-              GButton(
-                icon: Icons.home,
-                iconColor: Colors.orange,
-                iconActiveColor: Colors.white,
-                text: "Home",
-                textColor: Colors.white,
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const Homepage(),
-                    ),
-                  );
-                },
-              ),
-              GButton(
-                icon: Icons.favorite_border_outlined,
-                iconColor: Colors.orange,
-                text: "Favourites",
-                textColor: Colors.white,
-                iconActiveColor: Colors.white,
-                onPressed: () {},
-              ),
-              GButton(
-                icon: Icons.shopping_cart,
-                iconColor: Colors.orange,
-                text: "Cart",
-                textColor: Colors.white,
-                iconActiveColor: Colors.white,
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => CartPage(),
-                    ),
-                  );
-                },
-              ),
-            ],
-          ),
-        ),
-      ),
     );
   }
 }

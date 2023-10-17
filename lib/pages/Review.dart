@@ -47,7 +47,7 @@ class _ReviewState extends State<Review> with TickerProviderStateMixin {
       appBar: AppBar(
         centerTitle: true,
         title: const Text(
-          'Café Miron',
+          'File an Inquiry',
           style: TextStyle(color: Colors.white),
         ),
         backgroundColor: Colors.orange,
@@ -65,15 +65,6 @@ class _ReviewState extends State<Review> with TickerProviderStateMixin {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      const Text(
-                        'File an Inquiry',
-                        style: TextStyle(
-                          color: Colors.orange,
-                          fontSize: 30,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
                       const SizedBox(height: 20),
                       buildTextField(firstName, 'First Name', (value) {
                         if (value!.isEmpty) {
@@ -119,33 +110,45 @@ class _ReviewState extends State<Review> with TickerProviderStateMixin {
                         return null;
                       }, maxLines: 6),
                       const SizedBox(height: 40),
-                      ElevatedButton(
-                        onPressed: () {
-                          if (_formKey.currentState!.validate()) {
-                            Map<String, dynamic> data = {
-                              "First Name": firstName.text,
-                              "Last Name": lastName.text,
-                              "Telephone Number": telephone.text,
-                              "Email Address": emailAddress.text,
-                              "Inquiry": inquiry.text,
-                            };
-                            FirebaseFirestore.instance
-                                .collection("Inquiry")
-                                .add(data);
-                            firstName.clear();
-                            lastName.clear();
-                            telephone.clear();
-                            emailAddress.clear();
-                            inquiry.clear();
-                          }
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.orange,
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 16, horizontal: 20),
-                          textStyle: const TextStyle(fontSize: 18),
+                      FractionallySizedBox(
+                        widthFactor: 0.6,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            if (_formKey.currentState!.validate()) {
+                              Map<String, dynamic> data = {
+                                "First Name": firstName.text,
+                                "Last Name": lastName.text,
+                                "Telephone Number": telephone.text,
+                                "Email Address": emailAddress.text,
+                                "Inquiry": inquiry.text,
+                              };
+                              FirebaseFirestore.instance
+                                  .collection("Inquiry")
+                                  .add(data);
+                              firstName.clear();
+                              lastName.clear();
+                              telephone.clear();
+                              emailAddress.clear();
+                              inquiry.clear();
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30)),
+                            backgroundColor: Colors.orange,
+                            elevation: 5,
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 16, horizontal: 20),
+                            textStyle: const TextStyle(fontSize: 18),
+                          ),
+                          child: const Text('Submit',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              )),
                         ),
-                        child: const Text('Submit'),
                       ),
                     ],
                   ),
@@ -155,64 +158,6 @@ class _ReviewState extends State<Review> with TickerProviderStateMixin {
           ),
           // Rest of your widget content
         ],
-      ),
-      bottomNavigationBar: Container(
-        color: Colors.black,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 2),
-          child: GNav(
-            gap: 8,
-            tabBackgroundColor: const Color.fromARGB(255, 251, 139, 64),
-            padding: const EdgeInsets.all(20),
-            tabs: [
-              GButton(
-                icon: Icons.home,
-                iconColor: Colors.orange,
-                iconActiveColor: Colors.white,
-                text: "Home",
-                textColor: Colors.white,
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const Homepage(),
-                    ),
-                  );
-                },
-              ),
-              GButton(
-                icon: Icons.favorite_border_outlined,
-                iconColor: Colors.orange,
-                text: "Favourites",
-                textColor: Colors.white,
-                iconActiveColor: Colors.white,
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => FavPage(),
-                    ),
-                  );
-                },
-              ),
-              GButton(
-                icon: Icons.shopping_cart,
-                iconColor: Colors.orange,
-                text: "Cart",
-                textColor: Colors.white,
-                iconActiveColor: Colors.white,
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => CartPage(),
-                    ),
-                  );
-                },
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }
@@ -229,20 +174,18 @@ class _ReviewState extends State<Review> with TickerProviderStateMixin {
         color: Colors.orange,
       ),
       maxLines: maxLines,
+      textInputAction: TextInputAction.next,
       decoration: InputDecoration(
         labelText: labelText,
-        labelStyle: const TextStyle(color: Colors.black, fontSize: 20),
-        enabledBorder: const OutlineInputBorder(
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(
             color: Colors.orange,
             width: 2.0,
           ),
-        ),
-        focusedBorder: const OutlineInputBorder(
-          borderSide: BorderSide(
-            color: Color.fromARGB(255, 251, 139, 64),
-            width: 2.0,
-          ),
+          borderRadius: BorderRadius.circular(10),
         ),
       ),
       validator: validator,

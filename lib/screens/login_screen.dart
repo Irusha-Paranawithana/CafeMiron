@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:miron/screens/resetPasswordScreen.dart';
 import 'package:miron/views/home.dart';
+import 'package:miron/views/homeTemplate.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -42,7 +43,7 @@ class _LoginScreenState extends State<LoginScreen> {
         await prefs.setBool('isLoggedIn', true);
 
         Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const Homepage()),
+          MaterialPageRoute(builder: (context) => const HomePageTemplate()),
         );
       } else {
         Fluttertoast.showToast(
