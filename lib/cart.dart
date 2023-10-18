@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:miron/favourites.dart';
-import 'package:miron/pages/Review.dart';
-import 'package:miron/views/home.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:geolocator/geolocator.dart';
 
 class CartPage extends StatefulWidget {
   @override
@@ -12,16 +10,21 @@ class CartPage extends StatefulWidget {
 }
 
 class _CartPageState extends State<CartPage> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   Color _startColor = Colors.white;
   Color _endColor = Colors.orange;
   Duration _animationDuration = const Duration(seconds: 5);
   final DatabaseReference _databaseRef = FirebaseDatabase.instance.reference();
   List<QueryDocumentSnapshot>? cartItems;
+  late String selectedDeliveryOption;
+
+  Position? _currentUserPosition;
+  double? distanceInMeter = 0.0;
 
   @override
   void initState() {
     super.initState();
-    _animateBackground();
+    _getTheDistance();
     fetchCartItems();
   }
 
@@ -83,7 +86,7 @@ class _CartPageState extends State<CartPage> {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          placeOrder();
+          _showDeliveryOptionDialog();
         },
         label: const Text('Place the Order'),
         icon: const Icon(Icons.shopping_bag),
@@ -105,7 +108,27 @@ class _CartPageState extends State<CartPage> {
     );
   }
 
-  Future<void> placeOrder() async {
+  Future<void> _getTheDistance() async {
+    if (await Geolocator.isLocationServiceEnabled()) {
+      if (await Geolocator.checkPermission() == LocationPermission.denied) {
+        await Geolocator.requestPermission();
+      }
+
+      _currentUserPosition = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
+      print(_currentUserPosition!.latitude);
+    }
+    double mironlat = 6.329167109863599;
+    double mironlng = 80.85799613887737;
+
+    distanceInMeter = await Geolocator.distanceBetween(
+        _currentUserPosition!.latitude,
+        _currentUserPosition!.longitude,
+        mironlat,
+        mironlng);
+  }
+
+  Future<void> placeOrder(String selectedDeliveryOption) async {
     final cartItemsSnapshot =
         await FirebaseFirestore.instance.collection('cartItems').get();
 
@@ -117,32 +140,42 @@ class _CartPageState extends State<CartPage> {
         final imageUrl = data['imageUrl'];
         final quantity = data['quantity'];
 
-        // Generate a new order ID
-        String? orderId = _databaseRef.child("Orders").push().key;
+        // Get the current user's ID
+        final User? user = _auth.currentUser;
+        if (user != null) {
+          final userId = user.uid;
 
-        // Include order ID and selected delivery option in cart item data
-        Map<String, dynamic> orderData = {
-          "orderid": orderId,
-          "title": title,
-          "price": price,
-          "imageUrl": imageUrl,
-          "quantity": quantity,
-          "orderStatus": "Pending"
-        };
+          // Generate a new order ID
+          String? orderId = _databaseRef.child("Orders").push().key;
 
-        try {
-          // Upload the order data to Realtime Database under "Orders"
-          await _databaseRef.child("Orders").child(orderId!).set(orderData);
+          // Include user ID in cart item data
+          Map<String, dynamic> orderData = {
+            "userid": userId, // Include the user's ID
+            "orderid": orderId,
+            "title": title,
+            "price": price,
+            "imageUrl": imageUrl,
+            "quantity": quantity,
+            "orderStatus": "Pending"
+          };
 
-          // Delete the cart item from Firestore
-          await FirebaseFirestore.instance
-              .collection('cartItems')
-              .doc(item.id)
-              .delete();
+          try {
+            // Upload the order data to Realtime Database under "Orders"
+            await _databaseRef.child("Orders").child(orderId!).set(orderData);
 
-          print("Order Placed");
-        } catch (error) {
-          print("Error placing order: $error");
+            // Delete the cart item from Firestore
+            await FirebaseFirestore.instance
+                .collection('cartItems')
+                .doc(item.id)
+                .delete();
+
+            print("Order Placed");
+          } catch (error) {
+            print("Error placing order: $error");
+          }
+        } else {
+          // Handle the case when the user is not authenticated
+          print("User is not authenticated.");
         }
       }
     }
@@ -164,6 +197,73 @@ class _CartPageState extends State<CartPage> {
         .child(cartItemId!)
         .set(cartItemData)
         .then((value) => print("Added to Cart"));
+  }
+
+  Future<void> _showDeliveryOptionDialog() async {
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Select Delivery Option"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    selectedDeliveryOption = 'TakeAway';
+                  });
+                  Navigator.of(context).pop();
+                  placeOrder(selectedDeliveryOption);
+                  // Show a success alert here
+                  showOrderPlacedAlert();
+                },
+                child: Text("Takeaway"),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    selectedDeliveryOption = 'Cash on Delivery';
+                  });
+                  if (distanceInMeter == null || distanceInMeter! > 3000) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                            'Cash on Delivery is unavailable to your location.'),
+                      ),
+                    );
+                  } else {
+                    Navigator.of(context).pop();
+                    placeOrder(selectedDeliveryOption);
+                  }
+                },
+                child: Text("Cash on Delivery"),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void showOrderPlacedAlert() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Order Placed Successfully"),
+          content: Text("Your order has been placed successfully."),
+          actions: <Widget>[
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("OK"),
+            ),
+          ],
+        );
+      },
+    );
   }
 }
 
