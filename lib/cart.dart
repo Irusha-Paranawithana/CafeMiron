@@ -120,25 +120,27 @@ class _CartPageState extends State<CartPage> {
         // Generate a new order ID
         String? orderId = _databaseRef.child("Orders").push().key;
 
-        // Include orderid in cart item data
+        // Include order ID and selected delivery option in cart item data
         Map<String, dynamic> orderData = {
           "orderid": orderId,
           "title": title,
           "price": price,
           "imageUrl": imageUrl,
           "quantity": quantity,
+          "orderStatus": "Pending"
         };
 
         try {
-          // Upload the cart item with orderid to the Realtime Database under "Orders"
+          // Upload the order data to Realtime Database under "Orders"
           await _databaseRef.child("Orders").child(orderId!).set(orderData);
-          print("Order Placed");
 
           // Delete the cart item from Firestore
           await FirebaseFirestore.instance
               .collection('cartItems')
               .doc(item.id)
               .delete();
+
+          print("Order Placed");
         } catch (error) {
           print("Error placing order: $error");
         }
