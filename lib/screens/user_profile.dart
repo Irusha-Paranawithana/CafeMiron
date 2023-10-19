@@ -60,32 +60,58 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       });
 
       try {
-        // Update the user's profile data in Firestore
-        await FirebaseFirestore.instance
+        // Fetch the current user profile data from Firestore
+        DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
             .collection('users')
             .doc(widget.userId)
-            .update(
-          {
-            'userName': userNameController.text,
-            'residentialAddress': residentialAddressController.text,
-            'phoneNumber': phoneNumberController.text,
-          },
-        );
+            .get();
 
-        // Show a success message
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Profile updated successfully'),
-          ),
-        );
+        if (userSnapshot.exists) {
+          // Create a UserProfile object from the Firestore data
+          UserProfile currentUserProfile =
+              UserProfile.fromMap(userSnapshot.data() as Map<String, dynamic>);
 
-        // Navigate back to the HomeScreen and refresh it
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => Homepage(),
-          ),
-        );
+          // Create a new UserProfile object with the updated data
+          UserProfile newProfile = UserProfile(
+            userName: userNameController.text,
+            residentialAddress: residentialAddressController.text,
+            phoneNumber: phoneNumberController.text,
+          );
+
+          // Check if there are any changes
+          if (currentUserProfile.userName != newProfile.userName ||
+              currentUserProfile.residentialAddress !=
+                  newProfile.residentialAddress ||
+              currentUserProfile.phoneNumber != newProfile.phoneNumber) {
+            // Update the user's profile data in Firestore
+            await FirebaseFirestore.instance
+                .collection('users')
+                .doc(widget.userId)
+                .update(
+              {
+                'userName': userNameController.text,
+                'residentialAddress': residentialAddressController.text,
+                'phoneNumber': phoneNumberController.text,
+              },
+            );
+
+            // Show a success message if changes were made
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Profile updated successfully'),
+                backgroundColor: Colors.orange,
+              ),
+            );
+          } else {
+            // Show a Snackbar indicating no changes were made
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('No changes were made to the profile.'),
+                backgroundColor: Colors.orange,
+              ),
+            );
+          }
+        }
       } catch (e) {
         print('Error updating user profile: $e');
       } finally {
