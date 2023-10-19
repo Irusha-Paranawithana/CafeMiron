@@ -37,7 +37,8 @@ class _LoginScreenState extends State<LoginScreen> {
           await authHelper.signInWithEmailAndPassword(email, password);
 
       if (user != null) {
-        Fluttertoast.showToast(msg: "Login Successful");
+        Fluttertoast.showToast(
+            msg: "Welcome to CafeMiron", backgroundColor: Colors.orange);
 
         final SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setBool('isLoggedIn', true);
