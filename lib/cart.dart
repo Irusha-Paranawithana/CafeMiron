@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart';
 
 class CartPage extends StatefulWidget {
   @override
@@ -20,12 +21,18 @@ class _CartPageState extends State<CartPage> {
 
   Position? _currentUserPosition;
   double? distanceInMeter = 0.0;
+  String? _userAddress;
+  String? _residentialAddress;
+  double? _residentialLatitude;
+  double? _residentialLongitude;
 
   @override
   void initState() {
     super.initState();
     _getTheDistance();
     fetchCartItems();
+    _convertAddressToCoordinates(_residentialAddress!);
+    _convertToAddress(_userAddress as Position);
   }
 
   void _animateBackground() async {
@@ -39,6 +46,25 @@ class _CartPageState extends State<CartPage> {
       await Future.delayed(_animationDuration);
     }
   }
+
+  //convert address to coordinates
+  Future<void> _convertAddressToCoordinates(String address) async {
+    try {
+      List<Location> locations = await locationFromAddress(address);
+
+      if (locations.isNotEmpty) {
+        Location location = locations.first;
+        setState(() {
+          _residentialLatitude = location.latitude;
+          _residentialLongitude = location.longitude;
+        });
+      }
+    } catch (e) {
+      print("Error converting address to coordinates: $e");
+    }
+  }
+
+  //fetch cart items
 
   Future<void> fetchCartItems() async {
     final cartItemsSnapshot =
@@ -108,6 +134,7 @@ class _CartPageState extends State<CartPage> {
     );
   }
 
+  //get the distance
   Future<void> _getTheDistance() async {
     if (await Geolocator.isLocationServiceEnabled()) {
       if (await Geolocator.checkPermission() == LocationPermission.denied) {
@@ -126,7 +153,36 @@ class _CartPageState extends State<CartPage> {
         _currentUserPosition!.longitude,
         mironlat,
         mironlng);
+    _convertToAddress(_currentUserPosition!);
   }
+
+  //convert LatLng to address
+
+  Future<void> _convertToAddress(Position position) async {
+    try {
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+        position.latitude,
+        position.longitude,
+      );
+
+      if (placemarks.isNotEmpty) {
+        Placemark placemark = placemarks.first;
+        String userAddress = placemark.thoroughfare ?? '';
+        userAddress += ', ' + (placemark.subThoroughfare ?? '');
+        userAddress += ', ' + (placemark.locality ?? '');
+        userAddress += ', ' + (placemark.administrativeArea ?? '');
+        userAddress += ', ' + (placemark.country ?? '');
+
+        setState(() {
+          _userAddress = userAddress;
+        });
+      }
+    } catch (e) {
+      print("Error reverse geocoding: $e");
+    }
+  }
+
+  //place order
 
   Future<void> placeOrder(String selectedDeliveryOption) async {
     final cartItemsSnapshot =
@@ -180,6 +236,8 @@ class _CartPageState extends State<CartPage> {
       }
     }
   }
+
+  //add to cart
 
   Future<void> addToCart(
       String title, String price, String imageUrl, int quantity) async {
@@ -245,6 +303,8 @@ class _CartPageState extends State<CartPage> {
       },
     );
   }
+
+  // alert dialog
 
   void showOrderPlacedAlert() {
     showDialog(
