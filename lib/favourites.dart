@@ -9,9 +9,6 @@ class FavPage extends StatefulWidget {
 
 class _FavPageState extends State<FavPage> {
   User? user = FirebaseAuth.instance.currentUser; // Get the current user
-  Color _startColor = Colors.white;
-  Color _endColor = Colors.orange;
-  Duration _animationDuration = const Duration(seconds: 5);
 
 // Initially select the "Favourites" tab
 

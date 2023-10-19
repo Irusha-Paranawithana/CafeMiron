@@ -12,6 +12,7 @@ class Product extends StatefulWidget {
 
 class _ProductState extends State<Product> {
   int quantity = 1;
+  bool isFavorite = false; // Initialize as not a favorite
 
   Future<void> addToCart(int quantity) async {
     CollectionReference _collectionRef =
@@ -29,7 +30,7 @@ class _ProductState extends State<Product> {
     }).then((value) {
       print('Added to Cart'); // Print a message to the console
       // Show a SnackBar to confirm the item has been added to the cart
-      final snackBar = const SnackBar(
+      const snackBar = SnackBar(
         content: Text('Added to Cart'),
         duration: Duration(seconds: 2), // Adjust the duration as needed
         backgroundColor: Colors.orange,
@@ -38,7 +39,7 @@ class _ProductState extends State<Product> {
     });
   }
 
-  Future<void> addToFav() async {
+  Future<void> toggleFavorite() async {
     CollectionReference _collectionRef =
         FirebaseFirestore.instance.collection("Favourites");
 
@@ -49,14 +50,8 @@ class _ProductState extends State<Product> {
         .get();
 
     if (querySnapshot.docs.isNotEmpty) {
-      // Item is already in favorites, show a snackbar
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Item is already in Favorites'),
-          duration: Duration(seconds: 2), // Adjust the duration as needed
-          backgroundColor: Colors.orange,
-        ),
-      );
+      // Item is already in favorites, remove it
+      querySnapshot.docs.first.reference.delete();
     } else {
       // Item is not in favorites, add it
       String favId = _collectionRef.doc().id;
@@ -65,15 +60,41 @@ class _ProductState extends State<Product> {
         "price": widget.burgerData['price'],
         "imageUrl": widget.burgerData['imageUrl'],
       });
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Added to Favorites'),
-          duration: Duration(seconds: 2), // Adjust the duration as needed
-          backgroundColor: Colors.orange,
-        ),
-      );
     }
+
+    setState(() {
+      isFavorite = !isFavorite; // Toggle the favorite state
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content:
+            Text(isFavorite ? 'Added to Favorites' : 'Removed from Favorites'),
+        duration: Duration(seconds: 2),
+        backgroundColor: Colors.orange,
+      ),
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    checkFavorite(); // Check if the item is in favorites when the widget is created
+  }
+
+  Future<void> checkFavorite() async {
+    CollectionReference _collectionRef =
+        FirebaseFirestore.instance.collection("Favourites");
+
+    // Check if the item is already in favorites
+    QuerySnapshot querySnapshot = await _collectionRef
+        .where("title", isEqualTo: widget.burgerData['title'])
+        .limit(1)
+        .get();
+
+    setState(() {
+      isFavorite = querySnapshot.docs.isNotEmpty;
+    });
   }
 
   @override
@@ -150,12 +171,33 @@ class _ProductState extends State<Product> {
                     ],
                   ),
                 ),
-                Text(
-                  title,
-                  style: const TextStyle(
-                    color: Colors.orange,
-                    fontSize: 40,
-                    fontWeight: FontWeight.bold,
+                Container(
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              title,
+                              style: const TextStyle(
+                                color: Colors.orange,
+                                fontSize: 35,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () => toggleFavorite(),
+                        child: Icon(
+                          Icons.favorite,
+                          color: isFavorite ? Colors.orange : Colors.white,
+                          size: 35,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 const SizedBox(
@@ -169,7 +211,7 @@ class _ProductState extends State<Product> {
                     Text(
                       'Rs. ' + price,
                       style: const TextStyle(
-                        fontSize: 25,
+                        fontSize: 21,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
@@ -177,23 +219,25 @@ class _ProductState extends State<Product> {
                   ],
                 ),
                 const SizedBox(
-                  height: 30,
+                  height: 20,
                 ),
                 const Text(
                   "Description",
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 25,
+                    fontSize: 22,
                     fontWeight: FontWeight.bold,
                     decoration: TextDecoration.underline,
                   ),
                 ),
                 const SizedBox(
-                  height: 20,
+                  height: 10,
                 ),
                 Text(
                   description,
-                  style: const TextStyle(color: Colors.white, fontSize: 20),
+                  style: const TextStyle(
+                    color: Colors.white,
+                  ),
                 ),
                 const SizedBox(
                   height: 10,
@@ -202,31 +246,35 @@ class _ProductState extends State<Product> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Container(
-                      width: 40,
-                      height: 40, // Set width and height to make it round
+                      width: 35,
+                      height: 35,
                       decoration: const BoxDecoration(
-                        shape: BoxShape.circle, // Make it a circle
+                        shape: BoxShape.circle,
                         color: Colors.orange,
                       ),
-                      child: IconButton(
-                        onPressed: () {
-                          if (quantity > 1) {
-                            setState(() {
-                              quantity--;
-                            });
-                          }
-                        },
-                        icon: const Icon(
-                          Icons.remove,
-                          color: Colors.white,
+                      child: Center(
+                        child: IconButton(
+                          onPressed: () {
+                            if (quantity > 1) {
+                              setState(() {
+                                quantity--;
+                              });
+                            }
+                          },
+                          icon: const Icon(
+                            Icons.remove,
+                            color: Colors.white,
+                            size: 20,
+                          ),
                         ),
                       ),
                     ),
                     const SizedBox(
-                      width: 20,
+                      width: 10,
                     ),
                     Container(
-                      width: 25,
+                      constraints:
+                          BoxConstraints(maxWidth: 40), // Constrain the width
                       alignment: Alignment.center,
                       child: Text(
                         quantity.toString(),
@@ -235,57 +283,75 @@ class _ProductState extends State<Product> {
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
                         ),
+                        overflow: TextOverflow.ellipsis, // Handle long values
                       ),
                     ),
                     const SizedBox(
-                      width: 20,
+                      width: 10,
                     ),
                     Container(
-                      width: 40,
-                      height: 40, // Set width and height to make it round
+                      width: 35,
+                      height: 35,
                       decoration: const BoxDecoration(
-                        shape: BoxShape.circle, // Make it a circle
+                        shape: BoxShape.circle,
                         color: Colors.orange,
                       ),
                       child: IconButton(
+                        alignment: Alignment.center,
                         onPressed: () {
                           setState(() {
                             quantity++;
                           });
                         },
-                        icon: const Icon(
-                          Icons.add,
-                          color: Colors.white,
+                        icon: Container(
+                          alignment: Alignment.center,
+                          child: const Icon(
+                            Icons.add,
+                            color: Colors.white,
+                            size: 20,
+                          ),
                         ),
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 10),
                 Row(
                   children: [
-                    ElevatedButton.icon(
-                      onPressed: () => addToCart(quantity),
-                      icon: const Icon(Icons.shopping_cart),
-                      label: const Text("Add To Cart"),
-                      style: ElevatedButton.styleFrom(
-                        primary:
-                            Colors.green, // Set the background color to green
+                    const Text(
+                      'Total = ',
+                      style: TextStyle(
+                        fontSize: 17,
+                        color: Colors.white,
                       ),
                     ),
-                    const SizedBox(
-                      width: 15,
+                    Text(
+                      'Rs. ${(double.parse(price) * quantity).toStringAsFixed(2)}',
+                      style: const TextStyle(
+                        fontSize: 17,
+                        color: Colors.orange,
+                      ),
                     ),
-                    ElevatedButton.icon(
-                      onPressed: () => addToFav(),
-                      icon: const Icon(Icons.favorite),
-                      label: const Text("Add To Favourites"),
-                      style: ElevatedButton.styleFrom(
-                        primary:
-                            Colors.red, // Set the background color to green
+                    Spacer(),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(5),
+                      child: ElevatedButton.icon(
+                        onPressed: () => addToCart(quantity),
+                        icon: const Icon(Icons.shopping_cart),
+                        label: const Text(
+                          "Add To Cart",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, color: Colors.black),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          primary: Color.fromARGB(255, 49, 180, 53),
+                        ),
                       ),
                     ),
                   ],
+                ),
+                const SizedBox(
+                  width: 10,
                 ),
               ],
             ),
