@@ -31,8 +31,7 @@ class _CartPageState extends State<CartPage> {
     super.initState();
     _getTheDistance();
     fetchCartItems();
-    // _convertAddressToCoordinates(_residentialAddress!);
-    //_convertToAddress(_userAddress as Position);
+    _getTheDistanceResidence();
   }
 
   void _animateBackground() async {
@@ -46,23 +45,6 @@ class _CartPageState extends State<CartPage> {
       await Future.delayed(_animationDuration);
     }
   }
-
-  //convert address to coordinates
-  /*Future<void> _convertAddressToCoordinates(String address) async {
-    try {
-      List<Location> locations = await locationFromAddress(address);
-
-      if (locations.isNotEmpty) {
-        Location location = locations.first;
-        setState(() {
-          _residentialLatitude = location.latitude;
-          _residentialLongitude = location.longitude;
-        });
-      }
-    } catch (e) {
-      print("Error converting address to coordinates: $e");
-    }
-  }*/
 
   //fetch cart items
 
@@ -92,6 +74,8 @@ class _CartPageState extends State<CartPage> {
     return totalCartPrice;
   }
 
+  String placeM = '';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -116,7 +100,7 @@ class _CartPageState extends State<CartPage> {
         Padding(
           padding: const EdgeInsets.all(16.0),
           child: Text(
-            'Final Cart Price: \Rs${calculateFinalCartPrice().toStringAsFixed(2)}',
+            'Final Cart Price: \$${calculateFinalCartPrice().toStringAsFixed(2)}',
             style: const TextStyle(
               fontSize: 18.0,
               fontWeight: FontWeight.bold,
@@ -146,34 +130,24 @@ class _CartPageState extends State<CartPage> {
         _currentUserPosition!.longitude,
         mironlat,
         mironlng);
-    //_convertToAddress(_currentUserPosition!);
   }
 
-  //convert LatLng to address
-
-  /*Future<void> _convertToAddress(Position position) async {
-    try {
-      List<Placemark> placemarks = await placemarkFromCoordinates(
-        position.latitude,
-        position.longitude,
-      );
-
-      if (placemarks.isNotEmpty) {
-        Placemark placemark = placemarks.first;
-        String userAddress = placemark.thoroughfare ?? '';
-        userAddress += ', ' + (placemark.subThoroughfare ?? '');
-        userAddress += ', ' + (placemark.locality ?? '');
-        userAddress += ', ' + (placemark.administrativeArea ?? '');
-        userAddress += ', ' + (placemark.country ?? '');
-
-        setState(() {
-          _userAddress = userAddress;
-        });
+  Future<void> _getTheDistanceResidence() async {
+    if (await Geolocator.isLocationServiceEnabled()) {
+      if (await Geolocator.checkPermission() == LocationPermission.denied) {
+        await Geolocator.requestPermission();
       }
-    } catch (e) {
-      print("Error reverse geocoding: $e");
+
+      _currentUserPosition = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
+      print(_currentUserPosition!.latitude);
     }
-  }*/
+    double mironlat = 6.329167109863599;
+    double mironlng = 80.85799613887737;
+
+    distanceInMeter = await Geolocator.distanceBetween(
+        _residentialLatitude!, _residentialLongitude!, mironlat, mironlng);
+  }
 
   //place order
 
@@ -274,21 +248,12 @@ class _CartPageState extends State<CartPage> {
               ElevatedButton(
                 onPressed: () {
                   setState(() {
-                    selectedDeliveryOption = 'Cash on Delivery';
+                    selectedDeliveryOption = 'Cash On Delivery';
                   });
-                  if (distanceInMeter == null || distanceInMeter! > 3000) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                            'Cash on Delivery is unavailable to your location.'),
-                      ),
-                    );
-                  } else {
-                    Navigator.of(context).pop();
-                    placeOrder(selectedDeliveryOption);
-                  }
+                  Navigator.of(context).pop();
+                  _showDeliverylocationDialog();
                 },
-                child: Text("Cash on Delivery"),
+                child: Text("Cash On Delivery"),
               ),
             ],
           ),
@@ -296,6 +261,54 @@ class _CartPageState extends State<CartPage> {
       },
     );
   }
+
+  Future<void> _showDeliverylocationDialog() async {
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Select Delivery Location"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    _userAddress = placeM; // Set _userAddress to placeM
+                  });
+                  Navigator.of(context).pop();
+                },
+                child: Text("Current Location"),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  _retrieveAddress();
+                },
+                child: Text("Your Address"),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  // Function to retrieve and show the address
+  Future<void> _retrieveAddress() async {
+    List<Placemark> placemarks = await placemarkFromCoordinates(
+        _currentUserPosition!.latitude, _currentUserPosition!.longitude);
+
+    print(placemarks);
+
+    Placemark place = placemarks[0];
+
+    placeM =
+        '${place.thoroughfare},${place.street},${place.subLocality},${place.locality},${place.subAdministrativeArea},${place.administrativeArea},${place.postalCode},${place.country}';
+
+    setState(() {});
+  }
+
+  // Function to show the address in an AlertDialog
 
   // alert dialog
 
