@@ -31,8 +31,8 @@ class _CartPageState extends State<CartPage> {
     super.initState();
     _getTheDistance();
     fetchCartItems();
-    _convertAddressToCoordinates(_residentialAddress!);
-    _convertToAddress(_userAddress as Position);
+    // _convertAddressToCoordinates(_residentialAddress!);
+    //_convertToAddress(_userAddress as Position);
   }
 
   void _animateBackground() async {
@@ -48,7 +48,7 @@ class _CartPageState extends State<CartPage> {
   }
 
   //convert address to coordinates
-  Future<void> _convertAddressToCoordinates(String address) async {
+  /*Future<void> _convertAddressToCoordinates(String address) async {
     try {
       List<Location> locations = await locationFromAddress(address);
 
@@ -62,7 +62,7 @@ class _CartPageState extends State<CartPage> {
     } catch (e) {
       print("Error converting address to coordinates: $e");
     }
-  }
+  }*/
 
   //fetch cart items
 
@@ -95,15 +95,8 @@ class _CartPageState extends State<CartPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: AnimatedContainer(
-        duration: _animationDuration,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [_startColor, _endColor],
-          ),
-        ),
+      backgroundColor: Colors.white,
+      body: SafeArea(
         child: const Column(
           children: [
             Expanded(child: CartItemList()),
@@ -153,12 +146,12 @@ class _CartPageState extends State<CartPage> {
         _currentUserPosition!.longitude,
         mironlat,
         mironlng);
-    _convertToAddress(_currentUserPosition!);
+    //_convertToAddress(_currentUserPosition!);
   }
 
   //convert LatLng to address
 
-  Future<void> _convertToAddress(Position position) async {
+  /*Future<void> _convertToAddress(Position position) async {
     try {
       List<Placemark> placemarks = await placemarkFromCoordinates(
         position.latitude,
@@ -180,7 +173,7 @@ class _CartPageState extends State<CartPage> {
     } catch (e) {
       print("Error reverse geocoding: $e");
     }
-  }
+  }*/
 
   //place order
 
