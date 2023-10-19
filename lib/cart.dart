@@ -4,6 +4,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:miron/favourites.dart';
 
 class CartPage extends StatefulWidget {
   @override
@@ -21,7 +22,7 @@ class _CartPageState extends State<CartPage> {
 
   Position? _currentUserPosition;
   double? distanceInMeter = 0.0;
-  String? _userAddress;
+  String? userAddress;
   String? _residentialAddress;
   double? _residentialLatitude;
   double? _residentialLongitude;
@@ -149,8 +150,47 @@ class _CartPageState extends State<CartPage> {
         _residentialLatitude!, _residentialLongitude!, mironlat, mironlng);
   }
 
+  Future<void> _retrieveAddress() async {
+    List<Placemark> placemarks = await placemarkFromCoordinates(
+        _currentUserPosition!.latitude, _currentUserPosition!.longitude);
+
+    print(placemarks);
+
+    Placemark place = placemarks[0];
+
+    placeM =
+        '${place.thoroughfare},${place.street},${place.subLocality},${place.locality},${place.subAdministrativeArea},${place.administrativeArea},${place.postalCode},${place.country}';
+
+    setState(() {
+      userAddress = placeM;
+    });
+  }
+
+  Future<void> _getCoordinates() async {
+    final User? user = _auth.currentUser;
+    if (user != null) {
+      // Assuming you have a Firestore collection called 'users' where you store user information
+      final userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
+      if (userDoc.exists) {
+        final userData = userDoc.data() as Map<String, dynamic>;
+        final residentialAddress = userData['residentialAddress'] as String;
+
+        if (residentialAddress != null) {
+          List<Location> location =
+              await locationFromAddress(residentialAddress);
+          _residentialLatitude = double.parse('${location.last.latitude}');
+          _residentialLongitude = double.parse('${location.last.longitude}');
+        }
+      }
+    }
+  }
+
   //place order
 
+//place order
   Future<void> placeOrder(String selectedDeliveryOption) async {
     final cartItemsSnapshot =
         await FirebaseFirestore.instance.collection('cartItems').get();
@@ -179,7 +219,8 @@ class _CartPageState extends State<CartPage> {
             "price": price,
             "imageUrl": imageUrl,
             "quantity": quantity,
-            "orderStatus": "Pending"
+            "orderStatus": "Pending", // Add a comma here
+            "Address": userAddress // Address field
           };
 
           try {
@@ -235,8 +276,25 @@ class _CartPageState extends State<CartPage> {
             children: <Widget>[
               ElevatedButton(
                 onPressed: () {
-                  setState(() {
-                    selectedDeliveryOption = 'TakeAway';
+                  setState(() async {
+                    final User? user = _auth.currentUser;
+                    if (user != null) {
+                      // Assuming you have a Firestore collection called 'users' where you store user information
+                      final userDoc = await FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(user.uid)
+                          .get();
+                      if (userDoc.exists) {
+                        final userData = userDoc.data() as Map<String, dynamic>;
+                        final residentialAddress =
+                            userData['residentialAddress'] as String;
+
+                        userAddress = residentialAddress;
+                        selectedDeliveryOption = 'TakeAway';
+                        placeOrder(selectedDeliveryOption);
+                        showOrderPlacedAlert();
+                      }
+                    }
                   });
                   Navigator.of(context).pop();
                   placeOrder(selectedDeliveryOption);
@@ -272,17 +330,69 @@ class _CartPageState extends State<CartPage> {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    _userAddress = placeM; // Set _userAddress to placeM
-                  });
+                onPressed: () async {
+                  // First, get the coordinates
+                  await _getCoordinates();
+
+                  // Then, get the distance and address
+                  await _getTheDistance();
+                  await _retrieveAddress();
+
+                  // Check the distance and conditionally place the order
+                  if (distanceInMeter != null && distanceInMeter! <= 3000) {
+                    placeOrder(selectedDeliveryOption);
+                    showOrderPlacedAlert();
+                  } else {
+                    // Handle the case where distance is too far
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Delivery location is too far.'),
+                        duration: const Duration(seconds: 2),
+                      ),
+                    );
+                  }
+
                   Navigator.of(context).pop();
                 },
                 child: Text("Current Location"),
               ),
               ElevatedButton(
-                onPressed: () {
-                  _retrieveAddress();
+                onPressed: () async {
+                  final User? user = _auth.currentUser;
+                  if (user != null) {
+                    // Assuming you have a Firestore collection called 'users' where you store user information
+                    final userDoc = await FirebaseFirestore.instance
+                        .collection('users')
+                        .doc(user.uid)
+                        .get();
+                    if (userDoc.exists) {
+                      final userData = userDoc.data() as Map<String, dynamic>;
+                      final residentialAddress =
+                          userData['residentialAddress'] as String;
+                      await _getCoordinates();
+
+                      // Then, get the distance and address
+                      await _getTheDistanceResidence();
+
+                      // Check the distance and conditionally place the order
+                      if (distanceInMeter != null && distanceInMeter! <= 3000) {
+                        placeOrder(selectedDeliveryOption);
+                        userAddress = residentialAddress;
+                        showOrderPlacedAlert();
+                      } else {
+                        // Handle the case where distance is too far
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Delivery location is too far.'),
+                            duration: const Duration(seconds: 2),
+                          ),
+                        );
+                      }
+                    }
+                  }
+                  // First, get the coordinates
+
+                  Navigator.of(context).pop();
                 },
                 child: Text("Your Address"),
               ),
@@ -292,25 +402,6 @@ class _CartPageState extends State<CartPage> {
       },
     );
   }
-
-  // Function to retrieve and show the address
-  Future<void> _retrieveAddress() async {
-    List<Placemark> placemarks = await placemarkFromCoordinates(
-        _currentUserPosition!.latitude, _currentUserPosition!.longitude);
-
-    print(placemarks);
-
-    Placemark place = placemarks[0];
-
-    placeM =
-        '${place.thoroughfare},${place.street},${place.subLocality},${place.locality},${place.subAdministrativeArea},${place.administrativeArea},${place.postalCode},${place.country}';
-
-    setState(() {});
-  }
-
-  // Function to show the address in an AlertDialog
-
-  // alert dialog
 
   void showOrderPlacedAlert() {
     showDialog(
@@ -332,6 +423,12 @@ class _CartPageState extends State<CartPage> {
     );
   }
 }
+
+// Function to retrieve and show the address
+
+// Function to show the address in an AlertDialog
+
+// alert dialog
 
 class CartItemList extends StatelessWidget {
   const CartItemList({Key? key});
