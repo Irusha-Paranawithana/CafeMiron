@@ -3,6 +3,7 @@ import 'package:miron/map_utils.dart';
 import 'package:miron/screens/login_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:miron/screens/startScreen.dart';
 import 'package:miron/test.dart';
 import 'package:miron/views/home.dart';
 import 'package:miron/views/homeTemplate.dart';
@@ -36,6 +37,6 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.orange,
         ),
-        home: isLoggedIn ? HomePageTemplate() : LoginScreen());
+        home: isLoggedIn ? HomePageTemplate() : StartScreen());
   }
 }
