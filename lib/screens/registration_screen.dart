@@ -228,23 +228,23 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             ),
           ),
         ),
-        Align(
-          alignment: Alignment.centerRight,
-          child: IconButton(
-            icon: Icon(
-              _isConfirmPasswordVisible
-                  ? Icons.visibility
-                  : Icons.visibility_off,
-              color: Colors.grey, // Set the eye icon's color to gray
-            ),
-            onPressed: () {
-              setState(() {
-                _isConfirmPasswordVisible =
-                    !_isConfirmPasswordVisible; // Toggle visibility
-              });
-            },
-          ),
-        ),
+        // Align(
+        //   alignment: Alignment.centerRight,
+        //   child: IconButton(
+        //     icon: Icon(
+        //       _isConfirmPasswordVisible
+        //           ? Icons.visibility
+        //           : Icons.visibility_off,
+        //       color: Colors.grey, // Set the eye icon's color to gray
+        //     ),
+        //     onPressed: () {
+        //       setState(() {
+        //         _isConfirmPasswordVisible =
+        //             !_isConfirmPasswordVisible; // Toggle visibility
+        //       });
+        //     },
+        //   ),
+        // ),
       ],
     );
 
@@ -255,7 +255,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       borderRadius: BorderRadius.circular(30),
       child: MaterialButton(
         padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
-        minWidth: MediaQuery.of(context).size.width,
+        minWidth: MediaQuery.of(context).size.width / 2,
         onPressed: () {
           signUp(emailAddressController.text, passwordController.text);
         },

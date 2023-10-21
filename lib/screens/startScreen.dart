@@ -75,51 +75,48 @@ class _StartScreenState extends State<StartScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              const SizedBox(height: 40.0),
-              Lottie.asset('assets/animations/Hi Ani.json'),
-              const SizedBox(height: 20.0),
-              const Text(
-                'Welcome to',
-                style: TextStyle(
-                  fontSize: 24.0,
-                  fontWeight: FontWeight.bold,
-                ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            const SizedBox(height: 40.0),
+            Lottie.asset('assets/animations/Hi Ani.json'),
+            const SizedBox(height: 20.0),
+            const Text(
+              'Welcome to',
+              style: TextStyle(
+                fontSize: 24.0,
+                fontWeight: FontWeight.bold,
               ),
-              const Text(
-                'Café Miron',
-                style: TextStyle(
-                  fontSize: 45.0,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
+            ),
+            const Text(
+              'Café Miron',
+              style: TextStyle(
+                fontSize: 45.0,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
               ),
-              const Text(
-                'ñysß m<uq fm, ri ',
-                style: TextStyle(
-                  fontFamily: "SinhalaFont",
-                  fontSize: 25.0,
-                  color: Color.fromARGB(255, 118, 118, 118),
-                ),
+            ),
+            const Text(
+              'ñysß m<uq fm, ri ',
+              style: TextStyle(
+                fontFamily: "SinhalaFont",
+                fontSize: 25.0,
+                color: Color.fromARGB(255, 118, 118, 118),
               ),
-              Padding(
-                padding: const EdgeInsets.only(top: 140),
-                child: Column(
-                  children: [
-                    const SizedBox(height: 20.0),
-                    loginButton(context),
-                    const SizedBox(height: 20.0),
-                    signupButton(context),
-                  ],
-                ),
-              )
-            ],
-          ),
+            ),
+            Spacer(),
+            Column(
+              children: [
+                const SizedBox(height: 20.0),
+                loginButton(context),
+                const SizedBox(height: 20.0),
+                signupButton(context),
+                const SizedBox(height: 50.0),
+              ],
+            )
+          ],
         ),
       ),
     );
