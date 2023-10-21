@@ -109,94 +109,128 @@ class _MyOrdersState extends State<MyOrders> {
                                   margin:
                                       const EdgeInsets.symmetric(vertical: 10),
                                   child: ListTile(
-                                    contentPadding: const EdgeInsets.all(20),
-                                    title: Text(
-                                      'Item: $title',
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 18,
+                                      contentPadding: const EdgeInsets.all(20),
+                                      title: Text(
+                                        'Item: $title',
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 18,
+                                        ),
                                       ),
-                                    ),
-                                    subtitle: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'Quantity: $quantity',
-                                          style: const TextStyle(fontSize: 16),
-                                        ),
-                                        Text(
-                                          'Price: \$${price.toStringAsFixed(2)}',
-                                          style: const TextStyle(fontSize: 16),
-                                        ),
-                                        Text(
-                                          'Total Price: \$${total.toStringAsFixed(2)}',
-                                          style: const TextStyle(fontSize: 16),
-                                        ),
-                                        Text(
-                                          'Delivery Option: $deliveryOption', // Display the delivery option
-                                          style: const TextStyle(fontSize: 16),
-                                        ),
-                                        Text(
-                                          'Order Status: $orderStatus', // Display the status
-                                          style: const TextStyle(fontSize: 16),
-                                        ),
-                                        const SizedBox(height: 8),
-                                        Image.network(
-                                          imageUrl,
-                                          width: 100,
-                                          height: 100,
-                                        ),
-                                      ],
-                                    ),
-                                    trailing: ElevatedButton(
-                                      onPressed: () {
-                                        // Show a confirmation dialog
-                                        showDialog(
-                                          context: context,
-                                          builder: (BuildContext context) {
-                                            return AlertDialog(
-                                              title: const Text('Cancel Order'),
-                                              content: const Text(
-                                                  'Are you sure you want to cancel this order?'),
-                                              actions: <Widget>[
-                                                TextButton(
-                                                  child: const Text('No'),
-                                                  onPressed: () {
-                                                    Navigator.of(context).pop();
-                                                  },
-                                                ),
-                                                TextButton(
-                                                  child: const Text('Yes'),
-                                                  onPressed: () async {
-                                                    // Get the orderId of the order to be canceled
-                                                    final orderId =
-                                                        item['orderid'] ?? '';
+                                      subtitle: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'Quantity: $quantity',
+                                            style:
+                                                const TextStyle(fontSize: 16),
+                                          ),
+                                          Text(
+                                            'Price: \$${price.toStringAsFixed(2)}',
+                                            style:
+                                                const TextStyle(fontSize: 16),
+                                          ),
+                                          Text(
+                                            'Total Price: \$${total.toStringAsFixed(2)}',
+                                            style:
+                                                const TextStyle(fontSize: 16),
+                                          ),
+                                          Text(
+                                            'Delivery Option: $deliveryOption', // Display the delivery option
+                                            style:
+                                                const TextStyle(fontSize: 16),
+                                          ),
+                                          Text(
+                                            'Order Status: $orderStatus', // Display the status
+                                            style:
+                                                const TextStyle(fontSize: 16),
+                                          ),
+                                          const SizedBox(height: 8),
+                                          Image.network(
+                                            imageUrl,
+                                            width: 100,
+                                            height: 100,
+                                          ),
+                                        ],
+                                      ),
+                                      trailing: ElevatedButton(
+                                        onPressed: () {
+                                          // Check if the order status is "Pending" before allowing cancellation
+                                          if (orderStatus == 'Pending') {
+                                            // Show a confirmation dialog for cancellation
+                                            showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return AlertDialog(
+                                                  title: const Text(
+                                                      'Cancel Order'),
+                                                  content: const Text(
+                                                      'Are you sure you want to cancel this order?'),
+                                                  actions: <Widget>[
+                                                    TextButton(
+                                                      child: const Text('No'),
+                                                      onPressed: () {
+                                                        Navigator.of(context)
+                                                            .pop();
+                                                      },
+                                                    ),
+                                                    TextButton(
+                                                      child: const Text('Yes'),
+                                                      onPressed: () async {
+                                                        // Get the orderId of the order to be canceled
+                                                        final orderId =
+                                                            item['orderid'] ??
+                                                                '';
 
-                                                    // Check if orderId is not an empty string before canceling the order
-                                                    if (orderId.isNotEmpty) {
-                                                      // Implement cancellation logic here
+                                                        // Check if orderId is not an empty string before canceling the order
+                                                        if (orderId
+                                                            .isNotEmpty) {
+                                                          // Implement cancellation logic here
 
-                                                      // 1. Remove the order with the specified orderId from Firebase Realtime Database
-                                                      await _database
-                                                          .child('Orders')
-                                                          .child(orderId)
-                                                          .remove();
+                                                          // 1. Remove the order with the specified orderId from Firebase Realtime Database
+                                                          await _database
+                                                              .child('Orders')
+                                                              .child(orderId)
+                                                              .remove();
 
-                                                      // Now, the order is deleted from Firebase Realtime Database.
-                                                    }
+                                                          // Now, the order is deleted from Firebase Realtime Database.
+                                                        }
 
-                                                    Navigator.of(context).pop();
-                                                  },
-                                                ),
-                                              ],
+                                                        Navigator.of(context)
+                                                            .pop();
+                                                      },
+                                                    ),
+                                                  ],
+                                                );
+                                              },
                                             );
-                                          },
-                                        );
-                                      },
-                                      child: const Text('Cancel Order'),
-                                    ),
-                                  ),
+                                          } else {
+                                            // If the order status is not "Pending," show a message in an alert dialog
+                                            showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return AlertDialog(
+                                                  title: const Text(
+                                                      'Cannot Cancel Order'),
+                                                  content: const Text(
+                                                      'This order cannot be canceled because it is not in "Pending" status.'),
+                                                  actions: <Widget>[
+                                                    TextButton(
+                                                      child: const Text('OK'),
+                                                      onPressed: () {
+                                                        Navigator.of(context)
+                                                            .pop();
+                                                      },
+                                                    ),
+                                                  ],
+                                                );
+                                              },
+                                            );
+                                          }
+                                        },
+                                        child: const Text('Cancel Order'),
+                                      )),
                                 );
                               },
                             ),

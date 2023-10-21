@@ -241,6 +241,7 @@ class _CartPageState extends State<CartPage> {
           // Handle the case when the user is not authenticated
           print("User is not authenticated.");
         }
+        showOrderPlacedAlert();
       }
     }
   }
@@ -290,18 +291,16 @@ class _CartPageState extends State<CartPage> {
                             userData['residentialAddress'] as String;
 
                         userAddress = residentialAddress;
-                        selectedDeliveryOption = 'TakeAway';
+                        selectedDeliveryOption = 'TakeAway/Dine-In';
                         placeOrder(selectedDeliveryOption);
-                        showOrderPlacedAlert();
                       }
                     }
                   });
                   Navigator.of(context).pop();
                   placeOrder(selectedDeliveryOption);
                   // Show a success alert here
-                  showOrderPlacedAlert();
                 },
-                child: Text("Takeaway"),
+                child: Text("Takeaway/Dine-In"),
               ),
               ElevatedButton(
                 onPressed: () {
@@ -341,7 +340,6 @@ class _CartPageState extends State<CartPage> {
                   // Check the distance and conditionally place the order
                   if (distanceInMeter != null && distanceInMeter! <= 3000) {
                     placeOrder(selectedDeliveryOption);
-                    showOrderPlacedAlert();
                   } else {
                     // Handle the case where distance is too far
                     ScaffoldMessenger.of(context).showSnackBar(
