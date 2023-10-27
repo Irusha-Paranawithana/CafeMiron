@@ -99,10 +99,11 @@ class _ProductState extends State<Product> {
 
   @override
   Widget build(BuildContext context) {
-    final title = widget.burgerData['title'];
-    final price = widget.burgerData['price'];
-    final description = widget.burgerData['description'];
-    final imageUrl = widget.burgerData['imageUrl'];
+    final title = widget.burgerData['title'] ?? "Default Title";
+    final price = widget.burgerData['price'] ?? "Default Price";
+    final description =
+        widget.burgerData['description'] ?? "Default Description";
+    final imageUrl = widget.burgerData['imageUrl'] ?? "Default Image URL";
 
     return SafeArea(
       child: Scaffold(

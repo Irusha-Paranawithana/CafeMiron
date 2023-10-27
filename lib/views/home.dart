@@ -127,7 +127,9 @@ class _HomepageState extends State<Homepage> {
     return SafeArea(
       child: Scaffold(
         extendBody: true,
-        backgroundColor: Colors.white, // Set the background color to white
+        backgroundColor:
+            Colors.white, // Set the background color to transparent
+
         drawer: AppDrawer(
           user: user,
           userName: userName, // Pass userName

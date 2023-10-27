@@ -102,14 +102,14 @@ class _BurgerListViewState extends State<BurgerListView>
                       width: 0.8,
                       color: Colors.black,
                     ),
-                    borderRadius: BorderRadius.circular(30.0),
+                    borderRadius: BorderRadius.circular(10.0),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderSide: const BorderSide(
                       width: 1.0,
-                      color: Colors.black,
+                      color: Colors.orange,
                     ),
-                    borderRadius: BorderRadius.circular(30.0),
+                    borderRadius: BorderRadius.circular(10.0),
                   ),
                   hintText: "Search Food and Beverages",
                   hintStyle: const TextStyle(
@@ -156,7 +156,7 @@ class _BurgerListViewState extends State<BurgerListView>
                     child: Container(
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.circular(20.0),
+                        borderRadius: BorderRadius.circular(10.0),
                         boxShadow: [
                           BoxShadow(
                             color: Colors.black.withOpacity(0.2),
