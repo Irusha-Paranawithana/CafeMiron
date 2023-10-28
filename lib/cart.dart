@@ -211,7 +211,7 @@ class _CartPageState extends State<CartPage> {
           // Generate a new order ID
           String? orderId = _databaseRef.child("Orders").push().key;
 
-          // Include user ID in cart item data
+          // Include user ID, timestamp, and selected delivery option in cart item data
           Map<String, dynamic> orderData = {
             "userid": userId, // Include the user's ID
             "orderid": orderId,
@@ -219,8 +219,11 @@ class _CartPageState extends State<CartPage> {
             "price": price,
             "imageUrl": imageUrl,
             "quantity": quantity,
-            "orderStatus": "Pending", // Add a comma here
-            "Address": userAddress // Address field
+            "orderStatus": "Pending",
+            "Address": userAddress,
+            "timestamp": ServerValue.timestamp, // Include the timestamp
+            "selectedDeliveryOption":
+                selectedDeliveryOption, // Include the delivery option
           };
 
           try {

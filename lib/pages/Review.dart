@@ -121,6 +121,7 @@ class _ReviewState extends State<Review> with TickerProviderStateMixin {
                                 "Telephone Number": telephone.text,
                                 "Email Address": emailAddress.text,
                                 "Inquiry": inquiry.text,
+                                "Timestamp": FieldValue.serverTimestamp(),
                               };
                               FirebaseFirestore.instance
                                   .collection("Inquiry")
