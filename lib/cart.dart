@@ -291,7 +291,7 @@ class _CartPageState extends State<CartPage> {
                             userData['residentialAddress'] as String;
 
                         userAddress = residentialAddress;
-                        selectedDeliveryOption = 'TakeAway/Dine-In';
+                        selectedDeliveryOption = 'TakeAway';
                         placeOrder(selectedDeliveryOption);
                       }
                     }
@@ -300,7 +300,7 @@ class _CartPageState extends State<CartPage> {
                   placeOrder(selectedDeliveryOption);
                   // Show a success alert here
                 },
-                child: Text("Takeaway/Dine-In"),
+                child: Text("Takeaway"),
               ),
               ElevatedButton(
                 onPressed: () {
