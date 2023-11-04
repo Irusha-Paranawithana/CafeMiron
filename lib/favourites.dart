@@ -10,8 +10,6 @@ class FavPage extends StatefulWidget {
 class _FavPageState extends State<FavPage> {
   User? user = FirebaseAuth.instance.currentUser; // Get the current user
 
-// Initially select the "Favourites" tab
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,7 +22,10 @@ class CartItemList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance.collection('Favourites').snapshots(),
+      stream: FirebaseFirestore.instance
+          .collection('Favourites')
+          .where("userUID", isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+          .snapshots(), // Filter items by userUID
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return const Center(

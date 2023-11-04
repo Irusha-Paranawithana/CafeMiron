@@ -13,9 +13,7 @@ class CartPage extends StatefulWidget {
 
 class _CartPageState extends State<CartPage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  Color _startColor = Colors.white;
-  Color _endColor = Colors.orange;
-  Duration _animationDuration = const Duration(seconds: 5);
+
   final DatabaseReference _databaseRef = FirebaseDatabase.instance.reference();
   List<QueryDocumentSnapshot>? cartItems;
   late String selectedDeliveryOption;
@@ -35,29 +33,7 @@ class _CartPageState extends State<CartPage> {
     _getTheDistanceResidence();
   }
 
-  void _animateBackground() async {
-    while (mounted) {
-      setState(() {
-        final temp = _startColor;
-        _endColor = _startColor;
-        _startColor = temp;
-      });
-
-      await Future.delayed(_animationDuration);
-    }
-  }
-
-  //fetch cart items
-
-  Future<void> fetchCartItems() async {
-    final cartItemsSnapshot =
-        await FirebaseFirestore.instance.collection('cartItems').get();
-
-    setState(() {
-      cartItems = cartItemsSnapshot.docs;
-    });
-  }
-
+//----------------------------------------------------------------------------
   double calculateFinalCartPrice() {
     double totalCartPrice = 0.0;
 
@@ -74,6 +50,8 @@ class _CartPageState extends State<CartPage> {
 
     return totalCartPrice;
   }
+
+  //----------------------------------------------------------------------
 
   String placeM = '';
 
@@ -211,6 +189,9 @@ class _CartPageState extends State<CartPage> {
           // Generate a new order ID
           String? orderId = _databaseRef.child("Orders").push().key;
 
+          // Get the current timestamp as a string
+          String timestamp = DateTime.now().toLocal().toString();
+
           // Include user ID, timestamp, and selected delivery option in cart item data
           Map<String, dynamic> orderData = {
             "userid": userId, // Include the user's ID
@@ -221,7 +202,7 @@ class _CartPageState extends State<CartPage> {
             "quantity": quantity,
             "orderStatus": "Pending",
             "Address": userAddress,
-            "timestamp": ServerValue.timestamp, // Include the timestamp
+            "timestamp": timestamp, // Include the timestamp as a string
             "selectedDeliveryOption":
                 selectedDeliveryOption, // Include the delivery option
           };
@@ -251,22 +232,44 @@ class _CartPageState extends State<CartPage> {
 
   //add to cart
 
+  // 1. Modify your `addToCart` function to include the user's UID when adding an item to the cart.
   Future<void> addToCart(
       String title, String price, String imageUrl, int quantity) async {
-    String? cartItemId = _databaseRef.child("cartItems").push().key;
+    final User? user = _auth.currentUser;
 
-    Map<String, dynamic> cartItemData = {
-      "title": title,
-      "price": price,
-      "imageUrl": imageUrl,
-      "quantity": quantity,
-    };
+    if (user != null) {
+      String? cartItemId = _databaseRef.child("cartItems").push().key;
 
-    await _databaseRef
-        .child("cartItems")
-        .child(cartItemId!)
-        .set(cartItemData)
-        .then((value) => print("Added to Cart"));
+      Map<String, dynamic> cartItemData = {
+        "title": title,
+        "price": price,
+        "imageUrl": imageUrl,
+        "quantity": quantity,
+        "userUID": user.uid, // Include the user's UID in the data
+      };
+
+      await _databaseRef
+          .child("cartItems")
+          .child(cartItemId!)
+          .set(cartItemData)
+          .then((value) => print("Added to Cart"));
+    }
+  }
+
+// 2. Modify your `fetchCartItems` function to fetch items based on the user's UID.
+  Future<void> fetchCartItems() async {
+    final User? user = _auth.currentUser;
+
+    if (user != null) {
+      final cartItemsSnapshot = await FirebaseFirestore.instance
+          .collection('cartItems')
+          .where("userUID", isEqualTo: user.uid) // Filter by user's UID
+          .get();
+
+      setState(() {
+        cartItems = cartItemsSnapshot.docs;
+      });
+    }
   }
 
   Future<void> _showDeliveryOptionDialog() async {

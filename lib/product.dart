@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class Product extends StatefulWidget {
   final Map<String, dynamic> burgerData;
@@ -21,59 +22,86 @@ class _ProductState extends State<Product> {
     // Generate a new document ID for the cart item
     String itemId = _collectionRef.doc().id;
 
-    // Add data to the "cartItems" collection with the generated document ID
-    return _collectionRef.doc(itemId).set({
-      "title": widget.burgerData['title'],
-      "price": widget.burgerData['price'],
-      "imageUrl": widget.burgerData['imageUrl'],
-      "quantity": quantity, // Include quantity in the data
-    }).then((value) {
-      print('Added to Cart'); // Print a message to the console
-      // Show a SnackBar to confirm the item has been added to the cart
-      const snackBar = SnackBar(
-        content: Text('Added to Cart'),
-        duration: Duration(seconds: 2), // Adjust the duration as needed
-        backgroundColor: Colors.orange,
-      );
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-    });
+    // Get the current user
+    User? user = FirebaseAuth.instance.currentUser;
+
+    if (user != null) {
+      // User is signed in, include the UID in the cart item data
+      String userUID = user.uid;
+
+      // Add data to the "cartItems" collection with the generated document ID
+      return _collectionRef.doc(itemId).set({
+        "title": widget.burgerData['title'],
+        "price": widget.burgerData['price'],
+        "imageUrl": widget.burgerData['imageUrl'],
+        "quantity": quantity,
+        "userUID": userUID, // Include the user's UID in the data
+      }).then((value) {
+        print('Added to Cart');
+        // Show a SnackBar to confirm the item has been added to the cart
+        const snackBar = SnackBar(
+          content: Text('Added to Cart'),
+          duration: Duration(seconds: 2),
+          backgroundColor: Colors.orange,
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      });
+    } else {
+      print('User is not signed in');
+    }
   }
 
   Future<void> toggleFavorite() async {
     CollectionReference _collectionRef =
         FirebaseFirestore.instance.collection("Favourites");
 
-    // Check if the item is already in favorites
-    QuerySnapshot querySnapshot = await _collectionRef
-        .where("title", isEqualTo: widget.burgerData['title'])
-        .limit(1)
-        .get();
+    // Get the current user
+    User? user = FirebaseAuth.instance.currentUser;
 
-    if (querySnapshot.docs.isNotEmpty) {
-      // Item is already in favorites, remove it
-      querySnapshot.docs.first.reference.delete();
-    } else {
-      // Item is not in favorites, add it
-      String favId = _collectionRef.doc().id;
-      await _collectionRef.doc(favId).set({
-        "title": widget.burgerData['title'],
-        "price": widget.burgerData['price'],
-        "imageUrl": widget.burgerData['imageUrl'],
+    if (user != null) {
+      // User is signed in, include the UID in the favorite item data
+      String userUID = user.uid;
+
+      // Check if the item is already in favorites
+      QuerySnapshot querySnapshot = await _collectionRef
+          .where("title", isEqualTo: widget.burgerData['title'])
+          .where("userUID", isEqualTo: userUID) // Check for the user's UID
+          .limit(1)
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        // Item is already in favorites, remove it
+        querySnapshot.docs.first.reference.delete();
+      } else {
+        // Item is not in favorites, add it
+        String favId = _collectionRef.doc().id;
+        await _collectionRef.doc(favId).set({
+          "title": widget.burgerData['title'],
+          "price": widget.burgerData['price'],
+          "imageUrl": widget.burgerData['imageUrl'],
+          "userUID": userUID, // Include the user's UID in the data
+        });
+      }
+
+      setState(() {
+        isFavorite = !isFavorite; // Toggle the favorite state
       });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+              isFavorite ? 'Added to Favorites' : 'Removed from Favorites'),
+          duration: Duration(seconds: 2),
+          backgroundColor: Colors.orange,
+        ),
+      );
+    } else {
+      // User is not signed in, handle this case as needed
+      // You can show an error message or navigate to the login screen
+      print('User is not signed in');
+      // Handle the case where the user is not signed in.
+      // You may want to navigate to the login screen or display an error message.
     }
-
-    setState(() {
-      isFavorite = !isFavorite; // Toggle the favorite state
-    });
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content:
-            Text(isFavorite ? 'Added to Favorites' : 'Removed from Favorites'),
-        duration: Duration(seconds: 2),
-        backgroundColor: Colors.orange,
-      ),
-    );
   }
 
   @override

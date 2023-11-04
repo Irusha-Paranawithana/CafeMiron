@@ -11,7 +11,7 @@ class MyOrders extends StatefulWidget {
 }
 
 class _MyOrdersState extends State<MyOrders> {
-  final DatabaseReference _database = FirebaseDatabase.instance.reference();
+  final DatabaseReference _databaseRef = FirebaseDatabase.instance.reference();
   final User? _user =
       FirebaseAuth.instance.currentUser; // Get the authenticated user
   List<dynamic>? _orders;
@@ -20,12 +20,21 @@ class _MyOrdersState extends State<MyOrders> {
   void initState() {
     super.initState();
 
-    // Listen for changes to the Orders collection.
-    _database.child('Orders').onValue.listen((event) {
-      setState(() {
-        _orders = (event.snapshot.value as Map?)?.values.toList();
+    if (_user != null) {
+      final currentUserUID = _user?.uid;
+
+      // Listen for changes to the Orders collection where userid matches the current user's UID.
+      _databaseRef
+          .child('Orders')
+          .orderByChild('userid')
+          .equalTo(currentUserUID)
+          .onValue
+          .listen((event) {
+        setState(() {
+          _orders = (event.snapshot.value as Map?)?.values.toList();
+        });
       });
-    });
+    }
   }
 
   double calculateTotalPrice(dynamic item) {
@@ -46,7 +55,7 @@ class _MyOrdersState extends State<MyOrders> {
 
   Future<void> cancelOrder(String orderId) async {
     // Remove the order with the specified orderId from Firebase.
-    await _database.child('Orders').child(orderId).remove();
+    await _databaseRef.child('Orders').child(orderId).remove();
   }
 
   @override
@@ -189,7 +198,7 @@ class _MyOrdersState extends State<MyOrders> {
                                                           // Implement cancellation logic here
 
                                                           // 1. Remove the order with the specified orderId from Firebase Realtime Database
-                                                          await _database
+                                                          await _databaseRef
                                                               .child('Orders')
                                                               .child(orderId)
                                                               .remove();
