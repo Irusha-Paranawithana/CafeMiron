@@ -53,7 +53,12 @@ class _PastryListViewState extends State<PastryListView>
         builder: (context) => Product(
           burgerData: PastryData,
           PastryData: {},
+<<<<<<< HEAD
           IceCreamData: {},
+=======
+          coffeeData: {},
+          CoffeeData: {},
+>>>>>>> 6caf373012ccf76d86181e4035023de546218c18
         ),
       ),
     );
