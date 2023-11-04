@@ -14,15 +14,30 @@ class _IceCreamListViewState extends State<IceCreamListView>
   TextEditingController _searchController = TextEditingController();
   List<Map<String, dynamic>> filteredIceCreamTypes = [];
 
+  // Animation duration
+  Duration _animationDuration = const Duration(seconds: 5);
+  late AnimationController _animationController;
+
   @override
   void initState() {
     super.initState();
     loadAllIceCreamTypes();
+
+    _animationController = AnimationController(
+      vsync: this,
+      duration: _animationDuration,
+    )..repeat(reverse: true);
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
   }
 
   void loadAllIceCreamTypes() async {
     final QuerySnapshot snapshot =
-        await _firestore.collection('Ice Cream-Types').get();
+        await _firestore.collection('Ice Cream_types').get();
     final IceCreamTypes =
         snapshot.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
 
@@ -51,13 +66,13 @@ class _IceCreamListViewState extends State<IceCreamListView>
       context,
       MaterialPageRoute(
         builder: (context) => Product(
-          burgerData: IceCreamData,
-          IceCreamData: {},
+          IceCreamData: IceCreamData,
           PastryData: {},
           coffeeData: {},
-          CoffeeData: {},
+          burgerData: {},
           ChickenData: {},
           JuiceData: {},
+          CoffeeData: {},
         ),
       ),
     );
