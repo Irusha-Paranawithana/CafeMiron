@@ -13,6 +13,7 @@ import 'package:miron/food_items/Coffee.dart';
 import 'package:miron/food_items/CrispyChicken.dart';
 import 'package:miron/food_items/FruitJuice.dart';
 import 'package:miron/food_items/Pastries.dart';
+import 'package:miron/food_items/iceCream.dart';
 import 'package:miron/main.dart';
 import 'package:miron/model/colors.dart';
 
@@ -158,7 +159,7 @@ class _HomepageState extends State<Homepage> {
                   const SizedBox(
                     height: 10,
                   ),
-                  Row(
+                  const Row(
                     children: [
                       Expanded(
                         child: Divider(
@@ -167,7 +168,7 @@ class _HomepageState extends State<Homepage> {
                               1, // You can adjust the thickness as needed
                         ),
                       ),
-                      const Center(
+                      Center(
                         child: Padding(
                           padding: EdgeInsets.only(left: 10, right: 10),
                           child: Text(
@@ -209,7 +210,7 @@ class _HomepageState extends State<Homepage> {
                           }).toList(),
                         ),
                   const SizedBox(height: 30),
-                  Row(
+                  const Row(
                     children: [
                       Expanded(
                         child: Divider(
@@ -218,7 +219,7 @@ class _HomepageState extends State<Homepage> {
                               1, // You can adjust the thickness as needed
                         ),
                       ),
-                      const Center(
+                      Center(
                         child: Padding(
                           padding: EdgeInsets.only(left: 10, right: 10),
                           child: Text(
@@ -270,10 +271,15 @@ class _HomepageState extends State<Homepage> {
                                         return PastryListView();
                                       } else if (title == 'Hot Coffee') {
                                         return CoffeeListView();
+<<<<<<< HEAD
                                       } else if (title == 'Crispy Chicken') {
                                         return ChickenListView();
                                       } else if (title == 'Fruit Juice') {
                                         return JuiceListView();
+=======
+                                      } else if (title == 'Ice Cream') {
+                                        return IceCreamListView();
+>>>>>>> d07760f5d946123aea45e793c66c15e0b21125a4
                                       } else {
                                         // Handle other food items here
                                         // You can create additional if conditions or use a switch statement
