@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:miron/model/colors.dart';
 
 class UserDrawerHeader extends StatelessWidget {
   final User? user;
@@ -17,7 +18,7 @@ class UserDrawerHeader extends StatelessWidget {
     return SafeArea(
       child: Container(
         height: headerHeight,
-        color: Colors.orange,
+        color: mainColor,
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Row(
           children: [
@@ -34,7 +35,7 @@ class UserDrawerHeader extends StatelessWidget {
                         : 'U',
                     style: const TextStyle(
                       fontSize: 30,
-                      color: Colors.orange,
+                      color: mainColor,
                     ), // Adjust the font size and color
                   ),
                 ),

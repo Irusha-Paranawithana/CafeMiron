@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:miron/model/colors.dart';
 
 class FAQPage extends StatefulWidget {
   @override
@@ -18,7 +19,7 @@ class _FAQPageState extends State<FAQPage> {
           'FAQ',
           style: TextStyle(color: Colors.white),
         ),
-        backgroundColor: Colors.orange,
+        backgroundColor: mainColor,
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: _firestore.collection('FAQ').snapshots(),
@@ -26,7 +27,7 @@ class _FAQPageState extends State<FAQPage> {
           if (!snapshot.hasData) {
             return Center(
               child: CircularProgressIndicator(
-                color: Colors.orange, // Custom loading indicator color
+                color: mainColor, // Custom loading indicator color
               ),
             );
           }

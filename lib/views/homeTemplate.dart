@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:miron/cart.dart';
 import 'package:miron/favourites.dart';
+import 'package:miron/model/colors.dart';
 import 'package:miron/model/drawer.dart';
 import 'package:miron/pages/Review.dart';
 import 'package:miron/pages/firebase_service.dart';
@@ -18,7 +19,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Café Miron',
       theme: ThemeData(
-        primarySwatch: Colors.orange,
+        primarySwatch: createMaterialColor(const Color(0xFFff5003)),
       ),
       initialRoute: '/',
       routes: {
@@ -128,7 +129,7 @@ class _HomepageState extends State<HomePageTemplate> {
             'Café Miron',
             style: TextStyle(color: Colors.white),
           ),
-          backgroundColor: Colors.orange,
+          backgroundColor: mainColor,
         ),
         drawer: AppDrawer(
           user: user,
@@ -146,8 +147,8 @@ class _HomepageState extends State<HomePageTemplate> {
             key: navigationKey,
             height: 60,
             backgroundColor: Colors.transparent,
-            color: Colors.orange,
-            buttonBackgroundColor: Colors.black,
+            color: mainColor,
+            buttonBackgroundColor: mainColor,
             animationCurve: Curves.easeInOut,
             animationDuration: const Duration(milliseconds: 300),
             items: items,

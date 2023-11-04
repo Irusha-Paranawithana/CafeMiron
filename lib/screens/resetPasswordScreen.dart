@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:miron/model/colors.dart';
 import 'package:miron/screens/login_screen.dart';
 
 class ResetPassScreen extends StatefulWidget {
@@ -47,7 +48,7 @@ class _ResetPassScreenState extends State<ResetPassScreen> {
 
     final resetBtn = Material(
       elevation: 5,
-      color: Colors.orange,
+      color: mainColor,
       borderRadius: BorderRadius.circular(30),
       child: MaterialButton(
         padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
@@ -87,7 +88,7 @@ class _ResetPassScreenState extends State<ResetPassScreen> {
           'Forget Password',
           style: TextStyle(color: Colors.black),
         ),
-        backgroundColor: Colors.orange,
+        backgroundColor: mainColor,
       ),
       body: Stack(
         children: [

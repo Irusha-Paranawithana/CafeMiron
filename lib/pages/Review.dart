@@ -4,6 +4,7 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:miron/cart.dart';
 import 'package:miron/favourites.dart';
+import 'package:miron/model/colors.dart';
 import 'package:miron/screens/user_profile.dart';
 
 import 'package:miron/views/home.dart';
@@ -50,7 +51,7 @@ class _ReviewState extends State<Review> with TickerProviderStateMixin {
           'File an Inquiry',
           style: TextStyle(color: Colors.white),
         ),
-        backgroundColor: Colors.orange,
+        backgroundColor: mainColor,
       ),
       body: Column(
         mainAxisSize: MainAxisSize.max,
@@ -136,7 +137,7 @@ class _ReviewState extends State<Review> with TickerProviderStateMixin {
                           style: ElevatedButton.styleFrom(
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(30)),
-                            backgroundColor: Colors.orange,
+                            backgroundColor: mainColor,
                             elevation: 5,
                             padding: const EdgeInsets.symmetric(
                                 vertical: 16, horizontal: 20),
@@ -172,7 +173,7 @@ class _ReviewState extends State<Review> with TickerProviderStateMixin {
     return TextFormField(
       controller: controller,
       style: const TextStyle(
-        color: Colors.orange,
+        color: mainColor,
       ),
       maxLines: maxLines,
       textInputAction: TextInputAction.next,
@@ -183,7 +184,7 @@ class _ReviewState extends State<Review> with TickerProviderStateMixin {
         ),
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(
-            color: Colors.orange,
+            color: mainColor,
             width: 2.0,
           ),
           borderRadius: BorderRadius.circular(10),

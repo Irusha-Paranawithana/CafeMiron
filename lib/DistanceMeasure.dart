@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:miron/model/colors.dart';
 
 class Distance extends StatefulWidget {
   const Distance({Key? key});
@@ -46,7 +47,7 @@ class _DistanceState extends State<Distance> {
       appBar: AppBar(
         title: Text("Delivery"),
         centerTitle: true,
-        backgroundColor: Colors.orange,
+        backgroundColor: mainColor,
       ),
       body: Center(
         child: Text("hello"),

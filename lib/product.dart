@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:miron/model/colors.dart';
 
 class Product extends StatefulWidget {
   final Map<String, dynamic> burgerData;
@@ -72,7 +73,7 @@ class _ProductState extends State<Product> {
         const snackBar = SnackBar(
           content: Text('Added to Cart'),
           duration: Duration(seconds: 2),
-          backgroundColor: Colors.orange,
+          backgroundColor: mainColor,
         );
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
       });
@@ -122,7 +123,7 @@ class _ProductState extends State<Product> {
           content: Text(
               isFavorite ? 'Added to Favorites' : 'Removed from Favorites'),
           duration: Duration(seconds: 2),
-          backgroundColor: Colors.orange,
+          backgroundColor: mainColor,
         ),
       );
     } else {
@@ -148,7 +149,7 @@ class _ProductState extends State<Product> {
             'Café Miron',
             style: TextStyle(color: Colors.white),
           ),
-          backgroundColor: Colors.orange,
+          backgroundColor: mainColor,
         ),
         body: Column(
           children: [
@@ -217,7 +218,7 @@ class _ProductState extends State<Product> {
                             Text(
                               title,
                               style: const TextStyle(
-                                color: Colors.orange,
+                                color: mainColor,
                                 fontSize: 35,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -229,7 +230,7 @@ class _ProductState extends State<Product> {
                         onTap: () => toggleFavorite(),
                         child: Icon(
                           Icons.favorite,
-                          color: isFavorite ? Colors.orange : Colors.white,
+                          color: isFavorite ? mainColor : Colors.white,
                           size: 35,
                         ),
                       ),
@@ -286,7 +287,7 @@ class _ProductState extends State<Product> {
                       height: 35,
                       decoration: const BoxDecoration(
                         shape: BoxShape.circle,
-                        color: Colors.orange,
+                        color: mainColor,
                       ),
                       child: Center(
                         child: IconButton(
@@ -329,7 +330,7 @@ class _ProductState extends State<Product> {
                       height: 35,
                       decoration: const BoxDecoration(
                         shape: BoxShape.circle,
-                        color: Colors.orange,
+                        color: mainColor,
                       ),
                       child: IconButton(
                         alignment: Alignment.center,
@@ -364,7 +365,7 @@ class _ProductState extends State<Product> {
                       'Rs. ${(double.parse(price) * quantity).toStringAsFixed(2)}',
                       style: const TextStyle(
                         fontSize: 17,
-                        color: Colors.orange,
+                        color: mainColor,
                       ),
                     ),
                     Spacer(),

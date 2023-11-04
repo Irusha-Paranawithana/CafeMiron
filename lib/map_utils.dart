@@ -50,7 +50,8 @@ class _MapPageState extends State<MapPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Map Page'),
+        centerTitle: true,
+        title: Text('Find Us'),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {

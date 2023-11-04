@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:miron/model/colors.dart';
 import 'package:miron/screens/login_screen.dart';
 import 'package:miron/screens/registration_screen.dart';
 
@@ -17,7 +18,7 @@ class _StartScreenState extends State<StartScreen> {
       children: [
         Material(
           elevation: 5,
-          color: Colors.orange,
+          color: mainColor,
           borderRadius: BorderRadius.circular(30),
           child: MaterialButton(
             padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
@@ -46,7 +47,7 @@ class _StartScreenState extends State<StartScreen> {
       children: [
         Material(
           elevation: 5,
-          color: Colors.orange,
+          color: mainColor,
           borderRadius: BorderRadius.circular(30),
           child: MaterialButton(
             padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),

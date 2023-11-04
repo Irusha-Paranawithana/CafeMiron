@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:miron/history.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:miron/model/colors.dart';
 
 class MyOrders extends StatefulWidget {
   const MyOrders({Key? key}) : super(key: key);
@@ -67,7 +68,7 @@ class _MyOrdersState extends State<MyOrders> {
           'My Orders',
           style: TextStyle(color: Colors.white),
         ),
-        backgroundColor: Colors.orange,
+        backgroundColor: mainColor,
       ),
       body: SafeArea(
         child: Padding(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:miron/model/colors.dart';
 import 'package:miron/views/home.dart';
 
 import '../model/user_profile.dart';
@@ -99,7 +100,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text('Profile updated successfully'),
-                backgroundColor: Colors.orange,
+                backgroundColor: mainColor,
               ),
             );
           } else {
@@ -107,7 +108,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text('No changes were made to the profile.'),
-                backgroundColor: Colors.orange,
+                backgroundColor: mainColor,
               ),
             );
           }

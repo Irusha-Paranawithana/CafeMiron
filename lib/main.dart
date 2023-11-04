@@ -1,5 +1,6 @@
 import 'package:miron/DistanceMeasure.dart';
 import 'package:miron/map_utils.dart';
+import 'package:miron/model/colors.dart';
 import 'package:miron/screens/login_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -35,7 +36,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Email and password login',
         theme: ThemeData(
-          primarySwatch: Colors.orange,
+          primarySwatch: createMaterialColor(const Color(0xFFff5003)),
         ),
         home: isLoggedIn ? HomePageTemplate() : StartScreen());
   }

@@ -9,6 +9,8 @@ import 'package:miron/cart.dart';
 
 import 'package:miron/favourites.dart';
 import 'package:miron/food_items/Burgers.dart';
+import 'package:miron/main.dart';
+import 'package:miron/model/colors.dart';
 
 import 'package:miron/model/drawer.dart';
 
@@ -25,7 +27,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Café Miron',
       theme: ThemeData(
-        primarySwatch: Colors.orange,
+        primarySwatch: createMaterialColor(const Color(0xFFff5003)),
       ),
       initialRoute: '/',
       routes: {
@@ -52,7 +54,7 @@ class _HomepageState extends State<Homepage> {
 
   // Define initial gradient colors
   Color _startColor = Colors.white;
-  Color _endColor = Colors.orange;
+  Color _endColor = mainColor;
 
   // Animation duration
   final Duration _animationDuration = const Duration(seconds: 5);
@@ -137,7 +139,7 @@ class _HomepageState extends State<Homepage> {
         ),
         body: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.only(top: 25),
+            padding: const EdgeInsets.only(top: 0),
             child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -152,15 +154,36 @@ class _HomepageState extends State<Homepage> {
                   const SizedBox(
                     height: 10,
                   ),
-                  const Center(
-                    child: Text(
-                      'HOT DEALS',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Divider(
+                          color: Colors.black45,
+                          thickness:
+                              1, // You can adjust the thickness as needed
+                        ),
                       ),
-                    ),
+                      const Center(
+                        child: Padding(
+                          padding: EdgeInsets.only(left: 10, right: 10),
+                          child: Text(
+                            'HOT DEALS',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Divider(
+                          color: Colors.black45,
+                          thickness:
+                              1, // You can adjust the thickness as needed
+                        ),
+                      ),
+                    ],
                   ),
                   _dealsSnapshot == null
                       ? const CircularProgressIndicator()
@@ -182,15 +205,36 @@ class _HomepageState extends State<Homepage> {
                           }).toList(),
                         ),
                   const SizedBox(height: 30),
-                  const Center(
-                    child: Text(
-                      'WHAT\'S ON YOUR MIND',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Divider(
+                          color: Colors.black45,
+                          thickness:
+                              1, // You can adjust the thickness as needed
+                        ),
                       ),
-                    ),
+                      const Center(
+                        child: Padding(
+                          padding: EdgeInsets.only(left: 10, right: 10),
+                          child: Text(
+                            "WHAT'S ON YOUR MIND",
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Divider(
+                          color: Colors.black45,
+                          thickness:
+                              1, // You can adjust the thickness as needed
+                        ),
+                      ),
+                    ],
                   ),
                   _foodTypes.isEmpty
                       ? const CircularProgressIndicator()

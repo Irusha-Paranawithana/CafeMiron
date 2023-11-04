@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:miron/model/colors.dart';
 import 'package:miron/product.dart';
 
 class BurgerListView extends StatefulWidget {
@@ -82,7 +83,7 @@ class _BurgerListViewState extends State<BurgerListView>
             color: Colors.white,
           ),
         ),
-        backgroundColor: Colors.orange,
+        backgroundColor: mainColor,
         elevation: 0, // Remove app bar shadow
       ),
       body: CustomScrollView(
@@ -107,7 +108,7 @@ class _BurgerListViewState extends State<BurgerListView>
                   focusedBorder: OutlineInputBorder(
                     borderSide: const BorderSide(
                       width: 1.0,
-                      color: Colors.orange,
+                      color: mainColor,
                     ),
                     borderRadius: BorderRadius.circular(10.0),
                   ),
@@ -199,7 +200,7 @@ class _BurgerListViewState extends State<BurgerListView>
                                   style: const TextStyle(
                                     fontSize: 18.0,
                                     fontWeight: FontWeight.bold,
-                                    color: Colors.orange,
+                                    color: mainColor,
                                   ),
                                 ),
                               ],

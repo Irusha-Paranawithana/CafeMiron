@@ -1,4 +1,5 @@
 import 'package:miron/auth_helper.dart';
+import 'package:miron/model/colors.dart';
 import 'package:miron/screens/registration_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -143,7 +144,7 @@ class _LoginScreenState extends State<LoginScreen> {
       children: [
         Material(
             elevation: 5,
-            color: Colors.orange,
+            color: mainColor,
             borderRadius: BorderRadius.circular(30),
             child: IgnorePointer(
               ignoring: _isLoading,
@@ -175,7 +176,7 @@ class _LoginScreenState extends State<LoginScreen> {
         child: TextButton(
           child: const Text(
             "Forget Password ?",
-            style: TextStyle(color: Colors.orange),
+            style: TextStyle(color: mainColor),
           ),
           onPressed: () {
             Navigator.push(
@@ -251,7 +252,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 15,
-                                color: Colors.orange,
+                                color: mainColor,
                               ),
                             ),
                           )

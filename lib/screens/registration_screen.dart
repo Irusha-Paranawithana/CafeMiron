@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:miron/model/colors.dart';
 import 'package:miron/model/user_model.dart';
 
 import 'package:miron/screens/login_screen.dart';
@@ -251,7 +252,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     ///signup button
     final signUpButton = Material(
       elevation: 5,
-      color: Colors.orange,
+      color: mainColor,
       borderRadius: BorderRadius.circular(30),
       child: MaterialButton(
         padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
@@ -341,7 +342,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 15,
-                                    color: Colors.orange),
+                                    color: mainColor),
                               ),
                             )
                           ],
@@ -422,7 +423,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text("Account Created Successfully !"),
-        backgroundColor: Colors.orange, // Set the background color to orange
+        backgroundColor: mainColor, // Set the background color to orange
       ),
     );
 

@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:miron/map_utils.dart';
+import 'package:miron/model/colors.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 
 void main() {
+  WidgetsFlutterBinding
+      .ensureInitialized(); // Ensure Flutter services are initialized.
   runApp(ContactUsApp());
 }
 
@@ -35,6 +38,14 @@ class _ContactUsPageState extends State<ContactUsPage> {
         .get();
   }
 
+  void _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,7 +55,7 @@ class _ContactUsPageState extends State<ContactUsPage> {
           'Contact Us',
           style: TextStyle(color: Colors.white),
         ),
-        backgroundColor: Colors.orange, // Change the app bar color
+        backgroundColor: mainColor, // Change the app bar color
       ),
       body: FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
         future: contactData,
@@ -102,7 +113,7 @@ class _ContactUsPageState extends State<ContactUsPage> {
                       subtitle: GestureDetector(
                         onTap: () async {
                           final mailtoUrl = 'mailto:$email';
-                          //await _launchURL(mailtoUrl);
+                          _launchURL(mailtoUrl);
                         },
                         child: Text(
                           email,
@@ -148,13 +159,34 @@ class _ContactUsPageState extends State<ContactUsPage> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      subtitle: ElevatedButton(
-                        onPressed: () {
-                          // _launchURL(website); // Use the _launchURL function
-                        },
-                        child: const Text('Visit Cafe Miron Website'),
+                    ),
+                  Container(
+                    width: 3 /
+                        5 *
+                        MediaQuery.of(context)
+                            .size
+                            .width, // Set the width to 2/3 of the screen width
+                    height: 50,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        _launchURL(website); // Use the _launchURL function
+                      },
+                      style: ButtonStyle(
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(
+                                15.0), // Adjust the border radius as needed
+                          ),
+                        ),
+                      ),
+                      child: Text(
+                        'Visit Cafe Miron Website',
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                     ),
+                  ),
                   if (address != null)
                     ListTile(
                       title: const Text(
@@ -166,16 +198,39 @@ class _ContactUsPageState extends State<ContactUsPage> {
                       subtitle: Text(address), // Show the address
                     ),
                   const SizedBox(height: 20), // Add spacing
-                  ElevatedButton(
-                    onPressed: () async {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const MapPage(),
+                  Container(
+                    width: 3 /
+                        5 *
+                        MediaQuery.of(context)
+                            .size
+                            .width, // Set the width to 3/5 of the screen width
+                    height: 50,
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const MapPage(),
+                          ),
+                        );
+                      },
+                      style: ButtonStyle(
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(
+                                15.0), // Adjust the border radius as needed
+                          ),
                         ),
-                      );
-                    },
-                    child: const Text('Find Cafe Miron on Google Maps'),
+                      ),
+                      child: Text(
+                        'Find Cafe Miron on Google Maps',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
                   ),
                 ],
               ),
