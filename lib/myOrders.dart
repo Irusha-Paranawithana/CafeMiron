@@ -64,7 +64,7 @@ class _MyOrdersState extends State<MyOrders> {
       appBar: AppBar(
         centerTitle: true,
         title: const Text(
-          'Café Miron',
+          'My Orders',
           style: TextStyle(color: Colors.white),
         ),
         backgroundColor: Colors.orange,

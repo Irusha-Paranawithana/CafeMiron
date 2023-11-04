@@ -39,7 +39,8 @@ class _ContactUsPageState extends State<ContactUsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        centerTitle: true,
+        title: const Text(
           'Contact Us',
           style: TextStyle(color: Colors.white),
         ),
@@ -49,11 +50,11 @@ class _ContactUsPageState extends State<ContactUsPage> {
         future: contactData,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (!snapshot.hasData || snapshot.data!.data() == null) {
-            return Center(child: Text('No data available.'));
+            return const Center(child: Text('No data available.'));
           } else {
             final data = snapshot.data!.data() as Map<String, dynamic>;
             final logoUrl = data['LogoUrl'];
@@ -67,13 +68,14 @@ class _ContactUsPageState extends State<ContactUsPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  SizedBox(height: 20), // Add some spacing
+                  const SizedBox(height: 20), // Add some spacing
                   if (logoUrl != null)
                     CachedNetworkImage(
                       imageUrl: logoUrl,
                       placeholder: (context, url) =>
-                          CircularProgressIndicator(),
-                      errorWidget: (context, url, error) => Icon(Icons.error),
+                          const CircularProgressIndicator(),
+                      errorWidget: (context, url, error) =>
+                          const Icon(Icons.error),
                       width: 150, // Set the logo width
                       height: 150, // Set the logo height
                     ),
@@ -82,16 +84,16 @@ class _ContactUsPageState extends State<ContactUsPage> {
                       padding: const EdgeInsets.all(16.0),
                       child: Text(
                         title,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
-                  Divider(), // Add a horizontal line
+                  const Divider(), // Add a horizontal line
                   if (email != null)
                     ListTile(
-                      title: Text(
+                      title: const Text(
                         'Email:',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
@@ -104,7 +106,7 @@ class _ContactUsPageState extends State<ContactUsPage> {
                         },
                         child: Text(
                           email,
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.blue, // Make it look like a link
                             decoration: TextDecoration.underline,
                           ),
@@ -113,7 +115,7 @@ class _ContactUsPageState extends State<ContactUsPage> {
                     ),
                   if (telephone != null)
                     ListTile(
-                      title: Text(
+                      title: const Text(
                         'Telephone:',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
@@ -131,7 +133,7 @@ class _ContactUsPageState extends State<ContactUsPage> {
                         },
                         child: Text(
                           telephone,
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.blue, // Make it look like a link
                             decoration: TextDecoration.underline,
                           ),
@@ -140,7 +142,7 @@ class _ContactUsPageState extends State<ContactUsPage> {
                     ),
                   if (website != null)
                     ListTile(
-                      title: Text(
+                      title: const Text(
                         'Website:',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
@@ -150,12 +152,12 @@ class _ContactUsPageState extends State<ContactUsPage> {
                         onPressed: () {
                           // _launchURL(website); // Use the _launchURL function
                         },
-                        child: Text('Visit Cafe Miron Website'),
+                        child: const Text('Visit Cafe Miron Website'),
                       ),
                     ),
                   if (address != null)
                     ListTile(
-                      title: Text(
+                      title: const Text(
                         'Address:',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
@@ -163,17 +165,17 @@ class _ContactUsPageState extends State<ContactUsPage> {
                       ),
                       subtitle: Text(address), // Show the address
                     ),
-                  SizedBox(height: 20), // Add spacing
+                  const SizedBox(height: 20), // Add spacing
                   ElevatedButton(
                     onPressed: () async {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => MapPage(),
+                          builder: (context) => const MapPage(),
                         ),
                       );
                     },
-                    child: Text('Find Cafe Miron on Google Maps'),
+                    child: const Text('Find Cafe Miron on Google Maps'),
                   ),
                 ],
               ),
