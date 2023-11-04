@@ -60,11 +60,11 @@ class _FAQPageState extends State<FAQPage> {
                 child: ListTile(
                   title: Text(
                     question,
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                   ),
                   subtitle: Text(
                     answer,
-                    style: TextStyle(fontSize: 18),
+                    style: TextStyle(fontSize: 15),
                   ),
                   leading: Icon(
                     Icons.help_outline,
