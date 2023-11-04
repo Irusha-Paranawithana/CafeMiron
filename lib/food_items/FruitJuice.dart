@@ -3,75 +3,60 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:miron/model/colors.dart';
 import 'package:miron/product.dart';
 
-class BurgerListView extends StatefulWidget {
+class JuiceListView extends StatefulWidget {
   @override
-  _BurgerListViewState createState() => _BurgerListViewState();
+  _JuiceListViewState createState() => _JuiceListViewState();
 }
 
-class _BurgerListViewState extends State<BurgerListView>
+class _JuiceListViewState extends State<JuiceListView>
     with SingleTickerProviderStateMixin {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   TextEditingController _searchController = TextEditingController();
-  List<Map<String, dynamic>> filteredBurgerTypes = [];
-
-  // Animation duration
-  Duration _animationDuration = const Duration(seconds: 5);
-  late AnimationController _animationController;
+  List<Map<String, dynamic>> filteredJuiceTypes = [];
 
   @override
   void initState() {
     super.initState();
-    loadAllBurgerTypes();
-
-    _animationController = AnimationController(
-      vsync: this,
-      duration: _animationDuration,
-    )..repeat(reverse: true);
+    loadAllJuiceTypes();
   }
 
-  @override
-  void dispose() {
-    _animationController.dispose();
-    super.dispose();
-  }
-
-  void loadAllBurgerTypes() async {
+  void loadAllJuiceTypes() async {
     final QuerySnapshot snapshot =
-        await _firestore.collection('burger_types').get();
-    final burgerTypes =
+        await _firestore.collection('Fruit_Juice_Types').get();
+    final JuiceTypes =
         snapshot.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
 
     setState(() {
-      filteredBurgerTypes = burgerTypes;
+      filteredJuiceTypes = JuiceTypes;
     });
   }
 
-  void filterBurgerTypes(String query) {
+  void filterJuiceTypes(String query) {
     final lowercaseQuery = query.toLowerCase();
-    final filteredList = filteredBurgerTypes
-        .where((burgerData) => burgerData['title']
+    final filteredList = filteredJuiceTypes
+        .where((JuiceData) => JuiceData['title']
             .toString()
             .toLowerCase()
             .contains(lowercaseQuery))
         .toList();
 
     setState(() {
-      filteredBurgerTypes = filteredList;
+      filteredJuiceTypes = filteredList;
     });
   }
 
   void _navigateToProductPage(
-      BuildContext context, Map<String, dynamic> burgerData) {
+      BuildContext context, Map<String, dynamic> JuiceData) {
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => Product(
-          burgerData: burgerData,
+          JuiceData: JuiceData,
           PastryData: {},
           coffeeData: {},
           CoffeeData: {},
           ChickenData: {},
-          JuiceData: {},
+          burgerData: {},
         ),
       ),
     );
@@ -104,7 +89,7 @@ class _BurgerListViewState extends State<BurgerListView>
                   style:
                       const TextStyle(color: Color.fromARGB(255, 211, 116, 7)),
                   onChanged: (query) {
-                    filterBurgerTypes(query);
+                    filterJuiceTypes(query);
                   },
                   decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
@@ -139,7 +124,7 @@ class _BurgerListViewState extends State<BurgerListView>
                       onPressed: () {
                         setState(() {
                           _searchController.clear();
-                          loadAllBurgerTypes();
+                          loadAllJuiceTypes();
                         });
                       },
                     ),
@@ -150,18 +135,18 @@ class _BurgerListViewState extends State<BurgerListView>
             SliverList(
               delegate: SliverChildBuilderDelegate(
                 (BuildContext context, int index) {
-                  final burgerData = filteredBurgerTypes[index];
-                  final title = burgerData['title'];
+                  final JuiceData = filteredJuiceTypes[index];
+                  final title = JuiceData['title'];
 
-                  final price = burgerData['price'];
+                  final price = JuiceData['price'];
 
-                  final imageUrl = burgerData['imageUrl'];
+                  final imageUrl = JuiceData['imageUrl'];
 
                   return Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: InkWell(
                       onTap: () {
-                        _navigateToProductPage(context, burgerData);
+                        _navigateToProductPage(context, JuiceData);
                       },
                       child: Container(
                         decoration: BoxDecoration(
@@ -221,7 +206,7 @@ class _BurgerListViewState extends State<BurgerListView>
                     ),
                   );
                 },
-                childCount: filteredBurgerTypes.length,
+                childCount: filteredJuiceTypes.length,
               ),
             ),
           ],
