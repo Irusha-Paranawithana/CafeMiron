@@ -37,14 +37,19 @@ class _LoginScreenState extends State<LoginScreen> {
           await authHelper.signInWithEmailAndPassword(email, password);
 
       if (user != null) {
-        Fluttertoast.showToast(
-            msg: "Welcome to CafeMiron", backgroundColor: Colors.orange);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Welcome to Cafe Miron !"),
+            backgroundColor: Colors.black, // Set the background color to orange
+          ),
+        );
 
         final SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setBool('isLoggedIn', true);
 
-        Navigator.of(context).pushReplacement(
+        Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (context) => const HomePageTemplate()),
+          (Route<dynamic> route) => false,
         );
       } else {
         Fluttertoast.showToast(
@@ -225,7 +230,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       loginButton,
                       const SizedBox(
-                        height: 15,
+                        height: 150,
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,

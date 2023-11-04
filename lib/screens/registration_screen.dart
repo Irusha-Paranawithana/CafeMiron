@@ -57,8 +57,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       },
       textInputAction: TextInputAction.next,
       decoration: InputDecoration(
-        prefixIcon: Icon(Icons.account_circle),
-        contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+        prefixIcon: const Icon(Icons.account_circle),
+        contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
         labelText: "User Name",
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
@@ -86,8 +86,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       },
       textInputAction: TextInputAction.next,
       decoration: InputDecoration(
-        prefixIcon: Icon(Icons.mail),
-        contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+        prefixIcon: const Icon(Icons.mail),
+        contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
         labelText: "Email Address",
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
@@ -115,8 +115,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       },
       textInputAction: TextInputAction.next,
       decoration: InputDecoration(
-        prefixIcon: Icon(Icons.pin_drop),
-        contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+        prefixIcon: const Icon(Icons.pin_drop),
+        contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
         labelText: "Residential Address",
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
@@ -145,8 +145,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       },
       textInputAction: TextInputAction.next,
       decoration: InputDecoration(
-        prefixIcon: Icon(Icons.phone),
-        contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+        prefixIcon: const Icon(Icons.phone),
+        contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
         labelText: "Mobile Number",
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
@@ -176,8 +176,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           },
           textInputAction: TextInputAction.next,
           decoration: InputDecoration(
-            prefixIcon: Icon(Icons.lock),
-            contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+            prefixIcon: const Icon(Icons.lock),
+            contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
             labelText: "Password",
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
@@ -220,8 +220,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           },
           textInputAction: TextInputAction.done,
           decoration: InputDecoration(
-            prefixIcon: Icon(Icons.lock),
-            contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+            prefixIcon: const Icon(Icons.lock),
+            contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
             labelText: "Confirm Password",
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
@@ -254,7 +254,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       color: Colors.orange,
       borderRadius: BorderRadius.circular(30),
       child: MaterialButton(
-        padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+        padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
         minWidth: MediaQuery.of(context).size.width / 2,
         onPressed: () {
           signUp(emailAddressController.text, passwordController.text);
@@ -332,7 +332,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => LoginScreen(),
+                                    builder: (context) => const LoginScreen(),
                                   ),
                                 );
                               },
@@ -356,7 +356,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           if (_isLoading) // Display loading indicator with a semi-transparent background
             Container(
               color: Colors.black.withOpacity(0.5),
-              child: Center(
+              child: const Center(
                 child: CircularProgressIndicator(),
               ),
             ),
@@ -379,7 +379,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
-            builder: (context) => LoginScreen(),
+            builder: (context) => const LoginScreen(),
           ),
           (route) => false,
         );
@@ -419,12 +419,17 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         .collection("users")
         .doc(user.uid)
         .set(userModel.toMap());
-    Fluttertoast.showToast(msg: "Account Created Successfully !");
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text("Account Created Successfully !"),
+        backgroundColor: Colors.orange, // Set the background color to orange
+      ),
+    );
 
     Navigator.pushAndRemoveUntil(
         (context),
         MaterialPageRoute(
-          builder: (context) => Homepage(),
+          builder: (context) => const Homepage(),
         ),
         (route) => false);
   }

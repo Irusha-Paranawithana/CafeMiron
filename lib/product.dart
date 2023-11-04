@@ -15,6 +15,36 @@ class _ProductState extends State<Product> {
   int quantity = 1;
   bool isFavorite = false; // Initialize as not a favorite
 
+  @override
+  void initState() {
+    super.initState();
+    checkFavorite(); // Check if the item is in favorites when the widget is created
+  }
+
+  Future<void> checkFavorite() async {
+    CollectionReference _collectionRef =
+        FirebaseFirestore.instance.collection("Favourites");
+
+    // Get the current user
+    User? user = FirebaseAuth.instance.currentUser;
+
+    if (user != null) {
+      // User is signed in, include the UID in the favorite item data
+      String userUID = user.uid;
+
+      // Check if the item is already in favorites for the current user
+      QuerySnapshot querySnapshot = await _collectionRef
+          .where("title", isEqualTo: widget.burgerData['title'])
+          .where("userUID", isEqualTo: userUID)
+          .limit(1)
+          .get();
+
+      setState(() {
+        isFavorite = querySnapshot.docs.isNotEmpty;
+      });
+    }
+  }
+
   Future<void> addToCart(int quantity) async {
     CollectionReference _collectionRef =
         FirebaseFirestore.instance.collection("cartItems");
@@ -97,32 +127,8 @@ class _ProductState extends State<Product> {
       );
     } else {
       // User is not signed in, handle this case as needed
-      // You can show an error message or navigate to the login screen
       print('User is not signed in');
-      // Handle the case where the user is not signed in.
-      // You may want to navigate to the login screen or display an error message.
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    checkFavorite(); // Check if the item is in favorites when the widget is created
-  }
-
-  Future<void> checkFavorite() async {
-    CollectionReference _collectionRef =
-        FirebaseFirestore.instance.collection("Favourites");
-
-    // Check if the item is already in favorites
-    QuerySnapshot querySnapshot = await _collectionRef
-        .where("title", isEqualTo: widget.burgerData['title'])
-        .limit(1)
-        .get();
-
-    setState(() {
-      isFavorite = querySnapshot.docs.isNotEmpty;
-    });
   }
 
   @override
@@ -135,34 +141,35 @@ class _ProductState extends State<Product> {
 
     return SafeArea(
       child: Scaffold(
-          backgroundColor: Colors.white,
-          appBar: AppBar(
-            centerTitle: true,
-            title: const Text(
-              'Café Miron',
-              style: TextStyle(color: Colors.white),
-            ), // Set app bar title
-            backgroundColor: Colors.orange, // Set app bar background color
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          centerTitle: true,
+          title: const Text(
+            'Café Miron',
+            style: TextStyle(color: Colors.white),
           ),
-          body: Column(
-            children: [
-              Stack(
-                children: [
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height / 2.5,
-                    width: double.infinity,
-                    child: Image.network(
-                      imageUrl,
-                      fit: BoxFit.cover,
-                    ),
+          backgroundColor: Colors.orange,
+        ),
+        body: Column(
+          children: [
+            Stack(
+              children: [
+                SizedBox(
+                  height: MediaQuery.of(context).size.height / 2.5,
+                  width: double.infinity,
+                  child: Image.network(
+                    imageUrl,
+                    fit: BoxFit.cover,
                   ),
-                ],
-              ),
-              Expanded(
-                child: scroll(title, price, description),
-              ),
-            ],
-          )),
+                ),
+              ],
+            ),
+            Expanded(
+              child: scroll(title, price, description),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -302,8 +309,7 @@ class _ProductState extends State<Product> {
                       width: 10,
                     ),
                     Container(
-                      constraints:
-                          BoxConstraints(maxWidth: 40), // Constrain the width
+                      constraints: BoxConstraints(maxWidth: 40),
                       alignment: Alignment.center,
                       child: Text(
                         quantity.toString(),
@@ -312,7 +318,7 @@ class _ProductState extends State<Product> {
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
                         ),
-                        overflow: TextOverflow.ellipsis, // Handle long values
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                     const SizedBox(
