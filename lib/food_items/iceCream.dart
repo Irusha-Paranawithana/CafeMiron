@@ -3,72 +3,57 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:miron/model/colors.dart';
 import 'package:miron/product.dart';
 
-class BurgerListView extends StatefulWidget {
+class IceCreamListView extends StatefulWidget {
   @override
-  _BurgerListViewState createState() => _BurgerListViewState();
+  _IceCreamListViewState createState() => _IceCreamListViewState();
 }
 
-class _BurgerListViewState extends State<BurgerListView>
+class _IceCreamListViewState extends State<IceCreamListView>
     with SingleTickerProviderStateMixin {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   TextEditingController _searchController = TextEditingController();
-  List<Map<String, dynamic>> filteredBurgerTypes = [];
-
-  // Animation duration
-  Duration _animationDuration = const Duration(seconds: 5);
-  late AnimationController _animationController;
+  List<Map<String, dynamic>> filteredIceCreamTypes = [];
 
   @override
   void initState() {
     super.initState();
-    loadAllBurgerTypes();
-
-    _animationController = AnimationController(
-      vsync: this,
-      duration: _animationDuration,
-    )..repeat(reverse: true);
+    loadAllIceCreamTypes();
   }
 
-  @override
-  void dispose() {
-    _animationController.dispose();
-    super.dispose();
-  }
-
-  void loadAllBurgerTypes() async {
+  void loadAllIceCreamTypes() async {
     final QuerySnapshot snapshot =
-        await _firestore.collection('burger_types').get();
-    final burgerTypes =
+        await _firestore.collection('Ice Cream-Types').get();
+    final IceCreamTypes =
         snapshot.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
 
     setState(() {
-      filteredBurgerTypes = burgerTypes;
+      filteredIceCreamTypes = IceCreamTypes;
     });
   }
 
-  void filterBurgerTypes(String query) {
+  void filterIceCreamTypes(String query) {
     final lowercaseQuery = query.toLowerCase();
-    final filteredList = filteredBurgerTypes
-        .where((burgerData) => burgerData['title']
+    final filteredList = filteredIceCreamTypes
+        .where((IceCreamData) => IceCreamData['title']
             .toString()
             .toLowerCase()
             .contains(lowercaseQuery))
         .toList();
 
     setState(() {
-      filteredBurgerTypes = filteredList;
+      filteredIceCreamTypes = filteredList;
     });
   }
 
   void _navigateToProductPage(
-      BuildContext context, Map<String, dynamic> burgerData) {
+      BuildContext context, Map<String, dynamic> IceCreamData) {
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => Product(
-          burgerData: burgerData,
-          PastryData: {},
+          burgerData: IceCreamData,
           IceCreamData: {},
+          PastryData: {},
         ),
       ),
     );
@@ -101,7 +86,7 @@ class _BurgerListViewState extends State<BurgerListView>
                   style:
                       const TextStyle(color: Color.fromARGB(255, 211, 116, 7)),
                   onChanged: (query) {
-                    filterBurgerTypes(query);
+                    filterIceCreamTypes(query);
                   },
                   decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
@@ -136,7 +121,7 @@ class _BurgerListViewState extends State<BurgerListView>
                       onPressed: () {
                         setState(() {
                           _searchController.clear();
-                          loadAllBurgerTypes();
+                          loadAllIceCreamTypes();
                         });
                       },
                     ),
@@ -147,18 +132,18 @@ class _BurgerListViewState extends State<BurgerListView>
             SliverList(
               delegate: SliverChildBuilderDelegate(
                 (BuildContext context, int index) {
-                  final burgerData = filteredBurgerTypes[index];
-                  final title = burgerData['title'];
+                  final IceCreamData = filteredIceCreamTypes[index];
+                  final title = IceCreamData['title'];
 
-                  final price = burgerData['price'];
+                  final price = IceCreamData['price'];
 
-                  final imageUrl = burgerData['imageUrl'];
+                  final imageUrl = IceCreamData['imageUrl'];
 
                   return Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: InkWell(
                       onTap: () {
-                        _navigateToProductPage(context, burgerData);
+                        _navigateToProductPage(context, IceCreamData);
                       },
                       child: Container(
                         decoration: BoxDecoration(
@@ -218,7 +203,7 @@ class _BurgerListViewState extends State<BurgerListView>
                     ),
                   );
                 },
-                childCount: filteredBurgerTypes.length,
+                childCount: filteredIceCreamTypes.length,
               ),
             ),
           ],
