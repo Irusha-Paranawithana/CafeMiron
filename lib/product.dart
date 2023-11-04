@@ -9,7 +9,9 @@ class Product extends StatefulWidget {
   Product(
       {required this.burgerData,
       Key? key,
-      required Map<String, dynamic> PastryData})
+      required Map<String, dynamic> PastryData,
+      required Map<String, dynamic> coffeeData,
+      required Map<String, dynamic> CoffeeData})
       : super(key: key);
 
   @override
