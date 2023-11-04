@@ -3,59 +3,74 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:miron/model/colors.dart';
 import 'package:miron/product.dart';
 
-class PastryListView extends StatefulWidget {
+class ChickenListView extends StatefulWidget {
   @override
-  _PastryListViewState createState() => _PastryListViewState();
+  _ChickenListViewState createState() => _ChickenListViewState();
 }
 
-class _PastryListViewState extends State<PastryListView>
+class _ChickenListViewState extends State<ChickenListView>
     with SingleTickerProviderStateMixin {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   TextEditingController _searchController = TextEditingController();
-  List<Map<String, dynamic>> filteredPastryTypes = [];
+  List<Map<String, dynamic>> filteredChickenTypes = [];
+
+  // Animation duration
+  Duration _animationDuration = const Duration(seconds: 5);
+  late AnimationController _animationController;
 
   @override
   void initState() {
     super.initState();
-    loadAllPastryTypes();
+    loadAllChickenTypes();
+
+    _animationController = AnimationController(
+      vsync: this,
+      duration: _animationDuration,
+    )..repeat(reverse: true);
   }
 
-  void loadAllPastryTypes() async {
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  void loadAllChickenTypes() async {
     final QuerySnapshot snapshot =
-        await _firestore.collection('Pastry-Types').get();
-    final PastryTypes =
+        await _firestore.collection('Crispy_Chicken_types').get();
+    final ChickenTypes =
         snapshot.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
 
     setState(() {
-      filteredPastryTypes = PastryTypes;
+      filteredChickenTypes = ChickenTypes;
     });
   }
 
-  void filterPastryTypes(String query) {
+  void filterChickenTypes(String query) {
     final lowercaseQuery = query.toLowerCase();
-    final filteredList = filteredPastryTypes
-        .where((PastryData) => PastryData['title']
+    final filteredList = filteredChickenTypes
+        .where((ChickenData) => ChickenData['title']
             .toString()
             .toLowerCase()
             .contains(lowercaseQuery))
         .toList();
 
     setState(() {
-      filteredPastryTypes = filteredList;
+      filteredChickenTypes = filteredList;
     });
   }
 
   void _navigateToProductPage(
-      BuildContext context, Map<String, dynamic> PastryData) {
+      BuildContext context, Map<String, dynamic> ChickenData) {
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => Product(
-          burgerData: PastryData,
+          ChickenData: ChickenData,
           PastryData: {},
           coffeeData: {},
+          burgerData: {},
           CoffeeData: {},
-          ChickenData: {},
         ),
       ),
     );
@@ -88,7 +103,7 @@ class _PastryListViewState extends State<PastryListView>
                   style:
                       const TextStyle(color: Color.fromARGB(255, 211, 116, 7)),
                   onChanged: (query) {
-                    filterPastryTypes(query);
+                    filterChickenTypes(query);
                   },
                   decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
@@ -123,7 +138,7 @@ class _PastryListViewState extends State<PastryListView>
                       onPressed: () {
                         setState(() {
                           _searchController.clear();
-                          loadAllPastryTypes();
+                          loadAllChickenTypes();
                         });
                       },
                     ),
@@ -134,18 +149,18 @@ class _PastryListViewState extends State<PastryListView>
             SliverList(
               delegate: SliverChildBuilderDelegate(
                 (BuildContext context, int index) {
-                  final PastryData = filteredPastryTypes[index];
-                  final title = PastryData['title'];
+                  final ChickenData = filteredChickenTypes[index];
+                  final title = ChickenData['title'];
 
-                  final price = PastryData['price'];
+                  final price = ChickenData['price'];
 
-                  final imageUrl = PastryData['imageUrl'];
+                  final imageUrl = ChickenData['imageUrl'];
 
                   return Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: InkWell(
                       onTap: () {
-                        _navigateToProductPage(context, PastryData);
+                        _navigateToProductPage(context, ChickenData);
                       },
                       child: Container(
                         decoration: BoxDecoration(
@@ -205,7 +220,7 @@ class _PastryListViewState extends State<PastryListView>
                     ),
                   );
                 },
-                childCount: filteredPastryTypes.length,
+                childCount: filteredChickenTypes.length,
               ),
             ),
           ],
