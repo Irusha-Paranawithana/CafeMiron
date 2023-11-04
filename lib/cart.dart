@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:miron/favourites.dart';
+import 'package:miron/model/colors.dart';
 
 class CartPage extends StatefulWidget {
   @override
@@ -352,6 +353,7 @@ class _CartPageState extends State<CartPage> {
                       SnackBar(
                         content: Text('Delivery location is too far.'),
                         duration: const Duration(seconds: 2),
+                        backgroundColor: mainColor,
                       ),
                     );
                   }

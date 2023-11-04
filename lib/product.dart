@@ -6,7 +6,11 @@ import 'package:miron/model/colors.dart';
 
 class Product extends StatefulWidget {
   final Map<String, dynamic> burgerData;
-  Product({required this.burgerData, Key? key}) : super(key: key);
+  Product(
+      {required this.burgerData,
+      Key? key,
+      required Map<String, dynamic> PastryData})
+      : super(key: key);
 
   @override
   _ProductState createState() => _ProductState();

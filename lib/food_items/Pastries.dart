@@ -3,70 +3,55 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:miron/model/colors.dart';
 import 'package:miron/product.dart';
 
-class BurgerListView extends StatefulWidget {
+class PastryListView extends StatefulWidget {
   @override
-  _BurgerListViewState createState() => _BurgerListViewState();
+  _PastryListViewState createState() => _PastryListViewState();
 }
 
-class _BurgerListViewState extends State<BurgerListView>
+class _PastryListViewState extends State<PastryListView>
     with SingleTickerProviderStateMixin {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   TextEditingController _searchController = TextEditingController();
-  List<Map<String, dynamic>> filteredBurgerTypes = [];
-
-  // Animation duration
-  Duration _animationDuration = const Duration(seconds: 5);
-  late AnimationController _animationController;
+  List<Map<String, dynamic>> filteredPastryTypes = [];
 
   @override
   void initState() {
     super.initState();
-    loadAllBurgerTypes();
-
-    _animationController = AnimationController(
-      vsync: this,
-      duration: _animationDuration,
-    )..repeat(reverse: true);
+    loadAllPastryTypes();
   }
 
-  @override
-  void dispose() {
-    _animationController.dispose();
-    super.dispose();
-  }
-
-  void loadAllBurgerTypes() async {
+  void loadAllPastryTypes() async {
     final QuerySnapshot snapshot =
-        await _firestore.collection('burger_types').get();
-    final burgerTypes =
+        await _firestore.collection('Pastry-Types').get();
+    final PastryTypes =
         snapshot.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
 
     setState(() {
-      filteredBurgerTypes = burgerTypes;
+      filteredPastryTypes = PastryTypes;
     });
   }
 
-  void filterBurgerTypes(String query) {
+  void filterPastryTypes(String query) {
     final lowercaseQuery = query.toLowerCase();
-    final filteredList = filteredBurgerTypes
-        .where((burgerData) => burgerData['title']
+    final filteredList = filteredPastryTypes
+        .where((PastryData) => PastryData['title']
             .toString()
             .toLowerCase()
             .contains(lowercaseQuery))
         .toList();
 
     setState(() {
-      filteredBurgerTypes = filteredList;
+      filteredPastryTypes = filteredList;
     });
   }
 
   void _navigateToProductPage(
-      BuildContext context, Map<String, dynamic> burgerData) {
+      BuildContext context, Map<String, dynamic> PastryData) {
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => Product(
-          burgerData: burgerData,
+          burgerData: PastryData,
           PastryData: {},
         ),
       ),
@@ -100,7 +85,7 @@ class _BurgerListViewState extends State<BurgerListView>
                   style:
                       const TextStyle(color: Color.fromARGB(255, 211, 116, 7)),
                   onChanged: (query) {
-                    filterBurgerTypes(query);
+                    filterPastryTypes(query);
                   },
                   decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
@@ -135,7 +120,7 @@ class _BurgerListViewState extends State<BurgerListView>
                       onPressed: () {
                         setState(() {
                           _searchController.clear();
-                          loadAllBurgerTypes();
+                          loadAllPastryTypes();
                         });
                       },
                     ),
@@ -146,18 +131,18 @@ class _BurgerListViewState extends State<BurgerListView>
             SliverList(
               delegate: SliverChildBuilderDelegate(
                 (BuildContext context, int index) {
-                  final burgerData = filteredBurgerTypes[index];
-                  final title = burgerData['title'];
+                  final PastryData = filteredPastryTypes[index];
+                  final title = PastryData['title'];
 
-                  final price = burgerData['price'];
+                  final price = PastryData['price'];
 
-                  final imageUrl = burgerData['imageUrl'];
+                  final imageUrl = PastryData['imageUrl'];
 
                   return Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: InkWell(
                       onTap: () {
-                        _navigateToProductPage(context, burgerData);
+                        _navigateToProductPage(context, PastryData);
                       },
                       child: Container(
                         decoration: BoxDecoration(
@@ -217,7 +202,7 @@ class _BurgerListViewState extends State<BurgerListView>
                     ),
                   );
                 },
-                childCount: filteredBurgerTypes.length,
+                childCount: filteredPastryTypes.length,
               ),
             ),
           ],
