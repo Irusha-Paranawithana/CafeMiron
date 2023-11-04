@@ -14,7 +14,6 @@ class CartPage extends StatefulWidget {
 
 class _CartPageState extends State<CartPage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-
   final DatabaseReference _databaseRef = FirebaseDatabase.instance.reference();
   List<QueryDocumentSnapshot>? cartItems;
   late String selectedDeliveryOption;
@@ -34,7 +33,6 @@ class _CartPageState extends State<CartPage> {
     _getTheDistanceResidence();
   }
 
-//----------------------------------------------------------------------------
   double calculateFinalCartPrice() {
     double totalCartPrice = 0.0;
 
@@ -52,8 +50,6 @@ class _CartPageState extends State<CartPage> {
     return totalCartPrice;
   }
 
-  //----------------------------------------------------------------------
-
   String placeM = '';
 
   @override
@@ -61,9 +57,9 @@ class _CartPageState extends State<CartPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: const Column(
+        child: Column(
           children: [
-            Expanded(child: CartItemList()),
+            Expanded(child: CartItemList(cartItems)),
           ],
         ),
       ),
@@ -71,8 +67,8 @@ class _CartPageState extends State<CartPage> {
         onPressed: () {
           _showDeliveryOptionDialog();
         },
-        label: const Text('Place the Order'),
-        icon: const Icon(Icons.shopping_bag),
+        label: Text('Place the Order'),
+        icon: Icon(Icons.shopping_bag),
         backgroundColor: Colors.green,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -81,7 +77,7 @@ class _CartPageState extends State<CartPage> {
           padding: const EdgeInsets.all(16.0),
           child: Text(
             'Final Cart Price: \$${calculateFinalCartPrice().toStringAsFixed(2)}',
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 18.0,
               fontWeight: FontWeight.bold,
             ),
@@ -91,7 +87,6 @@ class _CartPageState extends State<CartPage> {
     );
   }
 
-  //get the distance
   Future<void> _getTheDistance() async {
     if (await Geolocator.isLocationServiceEnabled()) {
       if (await Geolocator.checkPermission() == LocationPermission.denied) {
@@ -102,6 +97,7 @@ class _CartPageState extends State<CartPage> {
           desiredAccuracy: LocationAccuracy.high);
       print(_currentUserPosition!.latitude);
     }
+
     double mironlat = 6.329167109863599;
     double mironlng = 80.85799613887737;
 
@@ -122,6 +118,7 @@ class _CartPageState extends State<CartPage> {
           desiredAccuracy: LocationAccuracy.high);
       print(_currentUserPosition!.latitude);
     }
+
     double mironlat = 6.329167109863599;
     double mironlng = 80.85799613887737;
 
@@ -148,7 +145,6 @@ class _CartPageState extends State<CartPage> {
   Future<void> _getCoordinates() async {
     final User? user = _auth.currentUser;
     if (user != null) {
-      // Assuming you have a Firestore collection called 'users' where you store user information
       final userDoc = await FirebaseFirestore.instance
           .collection('users')
           .doc(user.uid)
@@ -167,9 +163,6 @@ class _CartPageState extends State<CartPage> {
     }
   }
 
-  //place order
-
-//place order
   Future<void> placeOrder(String selectedDeliveryOption) async {
     final cartItemsSnapshot =
         await FirebaseFirestore.instance.collection('cartItems').get();
@@ -182,20 +175,16 @@ class _CartPageState extends State<CartPage> {
         final imageUrl = data['imageUrl'];
         final quantity = data['quantity'];
 
-        // Get the current user's ID
         final User? user = _auth.currentUser;
         if (user != null) {
           final userId = user.uid;
 
-          // Generate a new order ID
           String? orderId = _databaseRef.child("Orders").push().key;
 
-          // Get the current timestamp as a string
           String timestamp = DateTime.now().toLocal().toString();
 
-          // Include user ID, timestamp, and selected delivery option in cart item data
           Map<String, dynamic> orderData = {
-            "userid": userId, // Include the user's ID
+            "userid": userId,
             "orderid": orderId,
             "title": title,
             "price": price,
@@ -203,16 +192,13 @@ class _CartPageState extends State<CartPage> {
             "quantity": quantity,
             "orderStatus": "Pending",
             "Address": userAddress,
-            "timestamp": timestamp, // Include the timestamp as a string
-            "selectedDeliveryOption":
-                selectedDeliveryOption, // Include the delivery option
+            "timestamp": timestamp,
+            "selectedDeliveryOption": selectedDeliveryOption,
           };
 
           try {
-            // Upload the order data to Realtime Database under "Orders"
             await _databaseRef.child("Orders").child(orderId!).set(orderData);
 
-            // Delete the cart item from Firestore
             await FirebaseFirestore.instance
                 .collection('cartItems')
                 .doc(item.id)
@@ -223,7 +209,6 @@ class _CartPageState extends State<CartPage> {
             print("Error placing order: $error");
           }
         } else {
-          // Handle the case when the user is not authenticated
           print("User is not authenticated.");
         }
         showOrderPlacedAlert();
@@ -231,9 +216,6 @@ class _CartPageState extends State<CartPage> {
     }
   }
 
-  //add to cart
-
-  // 1. Modify your `addToCart` function to include the user's UID when adding an item to the cart.
   Future<void> addToCart(
       String title, String price, String imageUrl, int quantity) async {
     final User? user = _auth.currentUser;
@@ -246,7 +228,7 @@ class _CartPageState extends State<CartPage> {
         "price": price,
         "imageUrl": imageUrl,
         "quantity": quantity,
-        "userUID": user.uid, // Include the user's UID in the data
+        "userUID": user.uid,
       };
 
       await _databaseRef
@@ -257,19 +239,22 @@ class _CartPageState extends State<CartPage> {
     }
   }
 
-// 2. Modify your `fetchCartItems` function to fetch items based on the user's UID.
   Future<void> fetchCartItems() async {
     final User? user = _auth.currentUser;
 
     if (user != null) {
-      final cartItemsSnapshot = await FirebaseFirestore.instance
-          .collection('cartItems')
-          .where("userUID", isEqualTo: user.uid) // Filter by user's UID
-          .get();
+      try {
+        final cartItemsSnapshot = await FirebaseFirestore.instance
+            .collection('cartItems')
+            .where("userUID", isEqualTo: user.uid)
+            .get();
 
-      setState(() {
-        cartItems = cartItemsSnapshot.docs;
-      });
+        setState(() {
+          cartItems = cartItemsSnapshot.docs;
+        });
+      } catch (error) {
+        print("Error fetching cart items: $error");
+      }
     }
   }
 
@@ -287,7 +272,6 @@ class _CartPageState extends State<CartPage> {
                   setState(() async {
                     final User? user = _auth.currentUser;
                     if (user != null) {
-                      // Assuming you have a Firestore collection called 'users' where you store user information
                       final userDoc = await FirebaseFirestore.instance
                           .collection('users')
                           .doc(user.uid)
@@ -305,7 +289,6 @@ class _CartPageState extends State<CartPage> {
                   });
                   Navigator.of(context).pop();
                   placeOrder(selectedDeliveryOption);
-                  // Show a success alert here
                 },
                 child: Text("Takeaway"),
               ),
@@ -337,22 +320,17 @@ class _CartPageState extends State<CartPage> {
             children: <Widget>[
               ElevatedButton(
                 onPressed: () async {
-                  // First, get the coordinates
                   await _getCoordinates();
-
-                  // Then, get the distance and address
                   await _getTheDistance();
                   await _retrieveAddress();
 
-                  // Check the distance and conditionally place the order
                   if (distanceInMeter != null && distanceInMeter! <= 3000) {
                     placeOrder(selectedDeliveryOption);
                   } else {
-                    // Handle the case where distance is too far
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text('Delivery location is too far.'),
-                        duration: const Duration(seconds: 2),
+                        duration: Duration(seconds: 2),
                         backgroundColor: mainColor,
                       ),
                     );
@@ -366,7 +344,6 @@ class _CartPageState extends State<CartPage> {
                 onPressed: () async {
                   final User? user = _auth.currentUser;
                   if (user != null) {
-                    // Assuming you have a Firestore collection called 'users' where you store user information
                     final userDoc = await FirebaseFirestore.instance
                         .collection('users')
                         .doc(user.uid)
@@ -377,26 +354,22 @@ class _CartPageState extends State<CartPage> {
                           userData['residentialAddress'] as String;
                       await _getCoordinates();
 
-                      // Then, get the distance and address
                       await _getTheDistanceResidence();
 
-                      // Check the distance and conditionally place the order
                       if (distanceInMeter != null && distanceInMeter! <= 3000) {
                         placeOrder(selectedDeliveryOption);
                         userAddress = residentialAddress;
                         showOrderPlacedAlert();
                       } else {
-                        // Handle the case where distance is too far
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text('Delivery location is too far.'),
-                            duration: const Duration(seconds: 2),
+                            duration: Duration(seconds: 2),
                           ),
                         );
                       }
                     }
                   }
-                  // First, get the coordinates
 
                   Navigator.of(context).pop();
                 },
@@ -430,30 +403,15 @@ class _CartPageState extends State<CartPage> {
   }
 }
 
-// Function to retrieve and show the address
-
-// Function to show the address in an AlertDialog
-
-// alert dialog
-
 class CartItemList extends StatelessWidget {
-  const CartItemList({Key? key});
+  final List<QueryDocumentSnapshot>? cartItems;
+
+  CartItemList(this.cartItems, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance.collection('cartItems').snapshots(),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        }
-
-        final cartItems = snapshot.data!.docs;
-
-        if (cartItems.isEmpty) {
-          return const Center(
+    return cartItems == null || cartItems!.isEmpty
+        ? Center(
             child: Text(
               'Your cart is empty.',
               style: TextStyle(
@@ -461,26 +419,22 @@ class CartItemList extends StatelessWidget {
                 color: Colors.black,
               ),
             ),
+          )
+        : ListView.builder(
+            itemCount: cartItems?.length,
+            itemBuilder: (context, index) {
+              final cartItem = cartItems![index];
+              final data = cartItem.data() as Map<String, dynamic>;
+
+              return CartItemTile(
+                title: data['title'],
+                price: data['price'].toString(),
+                imageUrl: data['imageUrl'],
+                quantity: data['quantity'],
+                cartItem: cartItem,
+              );
+            },
           );
-        }
-
-        return ListView.builder(
-          itemCount: cartItems.length,
-          itemBuilder: (context, index) {
-            final cartItem = cartItems[index];
-            final data = cartItem.data() as Map<String, dynamic>;
-
-            return CartItemTile(
-              title: data['title'],
-              price: data['price'].toString(),
-              imageUrl: data['imageUrl'],
-              quantity: data['quantity'],
-              cartItem: cartItem,
-            );
-          },
-        );
-      },
-    );
   }
 }
 
