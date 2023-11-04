@@ -271,15 +271,12 @@ class _HomepageState extends State<Homepage> {
                                         return PastryListView();
                                       } else if (title == 'Hot Coffee') {
                                         return CoffeeListView();
-<<<<<<< HEAD
                                       } else if (title == 'Crispy Chicken') {
                                         return ChickenListView();
                                       } else if (title == 'Fruit Juice') {
                                         return JuiceListView();
-=======
                                       } else if (title == 'Ice Cream') {
                                         return IceCreamListView();
->>>>>>> d07760f5d946123aea45e793c66c15e0b21125a4
                                       } else {
                                         // Handle other food items here
                                         // You can create additional if conditions or use a switch statement

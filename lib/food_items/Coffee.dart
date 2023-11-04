@@ -72,6 +72,7 @@ class _CoffeeListViewState extends State<CoffeeListView>
           burgerData: {},
           ChickenData: {},
           JuiceData: {},
+          IceCreamData: {},
         ),
       ),
     );

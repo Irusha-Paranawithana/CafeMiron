@@ -48,29 +48,18 @@ class _PastryListViewState extends State<PastryListView>
   void _navigateToProductPage(
       BuildContext context, Map<String, dynamic> PastryData) {
     Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => Product(
-<<<<<<< HEAD
-          PastryData: PastryData,
-          coffeeData: {},
-          CoffeeData: {},
-          ChickenData: {},
-          burgerData: {},
-          JuiceData: {},
-=======
-          burgerData: PastryData,
-          PastryData: {},
-<<<<<<< HEAD
-          IceCreamData: {},
-=======
-          coffeeData: {},
-          CoffeeData: {},
->>>>>>> 6caf373012ccf76d86181e4035023de546218c18
->>>>>>> d07760f5d946123aea45e793c66c15e0b21125a4
-        ),
-      ),
-    );
+        context,
+        MaterialPageRoute(
+          builder: (context) => Product(
+            PastryData: PastryData,
+            coffeeData: {},
+            CoffeeData: {},
+            ChickenData: {},
+            burgerData: {},
+            JuiceData: {},
+            IceCreamData: {},
+          ),
+        ));
   }
 
   @override

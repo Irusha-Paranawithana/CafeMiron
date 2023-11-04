@@ -56,6 +56,8 @@ class _IceCreamListViewState extends State<IceCreamListView>
           PastryData: {},
           coffeeData: {},
           CoffeeData: {},
+          ChickenData: {},
+          JuiceData: {},
         ),
       ),
     );
