@@ -3,62 +3,62 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:miron/model/colors.dart';
 import 'package:miron/product.dart';
 
-class JuiceListView extends StatefulWidget {
+class SaladListView extends StatefulWidget {
   @override
-  _JuiceListViewState createState() => _JuiceListViewState();
+  _SaladListViewState createState() => _SaladListViewState();
 }
 
-class _JuiceListViewState extends State<JuiceListView>
+class _SaladListViewState extends State<SaladListView>
     with SingleTickerProviderStateMixin {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   TextEditingController _searchController = TextEditingController();
-  List<Map<String, dynamic>> filteredJuiceTypes = [];
+  List<Map<String, dynamic>> filteredSaladTypes = [];
 
   @override
   void initState() {
     super.initState();
-    loadAllJuiceTypes();
+    loadAllSaladTypes();
   }
 
-  void loadAllJuiceTypes() async {
+  void loadAllSaladTypes() async {
     final QuerySnapshot snapshot =
-        await _firestore.collection('Fruit_Juice_Types').get();
-    final JuiceTypes =
+        await _firestore.collection('Fruit_Salad_Types').get();
+    final SaladTypes =
         snapshot.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
 
     setState(() {
-      filteredJuiceTypes = JuiceTypes;
+      filteredSaladTypes = SaladTypes;
     });
   }
 
-  void filterJuiceTypes(String query) {
+  void filterSaladTypes(String query) {
     final lowercaseQuery = query.toLowerCase();
-    final filteredList = filteredJuiceTypes
-        .where((JuiceData) => JuiceData['title']
+    final filteredList = filteredSaladTypes
+        .where((SaladData) => SaladData['title']
             .toString()
             .toLowerCase()
             .contains(lowercaseQuery))
         .toList();
 
     setState(() {
-      filteredJuiceTypes = filteredList;
+      filteredSaladTypes = filteredList;
     });
   }
 
   void _navigateToProductPage(
-      BuildContext context, Map<String, dynamic> JuiceData) {
+      BuildContext context, Map<String, dynamic> SaladData) {
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => Product(
-          JuiceData: JuiceData,
+          SaladData: SaladData,
           PastryData: {},
           coffeeData: {},
           CoffeeData: {},
           ChickenData: {},
           burgerData: {},
           IceCreamData: {},
-          SaladData: {},
+          JuiceData: {},
         ),
       ),
     );
@@ -91,7 +91,7 @@ class _JuiceListViewState extends State<JuiceListView>
                   style:
                       const TextStyle(color: Color.fromARGB(255, 211, 116, 7)),
                   onChanged: (query) {
-                    filterJuiceTypes(query);
+                    filterSaladTypes(query);
                   },
                   decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
@@ -126,7 +126,7 @@ class _JuiceListViewState extends State<JuiceListView>
                       onPressed: () {
                         setState(() {
                           _searchController.clear();
-                          loadAllJuiceTypes();
+                          loadAllSaladTypes();
                         });
                       },
                     ),
@@ -137,18 +137,18 @@ class _JuiceListViewState extends State<JuiceListView>
             SliverList(
               delegate: SliverChildBuilderDelegate(
                 (BuildContext context, int index) {
-                  final JuiceData = filteredJuiceTypes[index];
-                  final title = JuiceData['title'];
+                  final SaladData = filteredSaladTypes[index];
+                  final title = SaladData['title'];
 
-                  final price = JuiceData['price'];
+                  final price = SaladData['price'];
 
-                  final imageUrl = JuiceData['imageUrl'];
+                  final imageUrl = SaladData['imageUrl'];
 
                   return Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: InkWell(
                       onTap: () {
-                        _navigateToProductPage(context, JuiceData);
+                        _navigateToProductPage(context, SaladData);
                       },
                       child: Container(
                         decoration: BoxDecoration(
@@ -208,7 +208,7 @@ class _JuiceListViewState extends State<JuiceListView>
                     ),
                   );
                 },
-                childCount: filteredJuiceTypes.length,
+                childCount: filteredSaladTypes.length,
               ),
             ),
           ],

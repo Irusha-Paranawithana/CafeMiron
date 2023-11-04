@@ -73,6 +73,7 @@ class _ChickenListViewState extends State<ChickenListView>
           CoffeeData: {},
           JuiceData: {},
           IceCreamData: {},
+          SaladData: {},
         ),
       ),
     );

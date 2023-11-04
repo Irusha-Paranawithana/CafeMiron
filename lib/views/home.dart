@@ -12,6 +12,7 @@ import 'package:miron/food_items/Burgers.dart';
 import 'package:miron/food_items/Coffee.dart';
 import 'package:miron/food_items/CrispyChicken.dart';
 import 'package:miron/food_items/FruitJuice.dart';
+import 'package:miron/food_items/FruitSalad.dart';
 import 'package:miron/food_items/Pastries.dart';
 import 'package:miron/food_items/iceCream.dart';
 import 'package:miron/main.dart';
@@ -277,6 +278,8 @@ class _HomepageState extends State<Homepage> {
                                         return JuiceListView();
                                       } else if (title == 'Ice Cream') {
                                         return IceCreamListView();
+                                      } else if (title == 'Fruit Salad') {
+                                        return SaladListView();
                                       } else {
                                         // Handle other food items here
                                         // You can create additional if conditions or use a switch statement

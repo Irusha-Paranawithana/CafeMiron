@@ -73,6 +73,7 @@ class _BurgerListViewState extends State<BurgerListView>
           CoffeeData: {},
           ChickenData: {},
           JuiceData: {},
+          SaladData: {},
         ),
       ),
     );

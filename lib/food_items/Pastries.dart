@@ -58,6 +58,7 @@ class _PastryListViewState extends State<PastryListView>
             burgerData: {},
             JuiceData: {},
             IceCreamData: {},
+            SaladData: {},
           ),
         ));
   }
