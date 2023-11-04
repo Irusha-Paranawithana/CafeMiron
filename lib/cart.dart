@@ -164,55 +164,58 @@ class _CartPageState extends State<CartPage> {
   }
 
   Future<void> placeOrder(String selectedDeliveryOption) async {
-    final cartItemsSnapshot =
-        await FirebaseFirestore.instance.collection('cartItems').get();
+    final User? user = _auth.currentUser;
+    if (user != null) {
+      try {
+        // Fetch the cart items for the current user
+        final cartItemsSnapshot = await FirebaseFirestore.instance
+            .collection('cartItems')
+            .where("userUID", isEqualTo: user.uid)
+            .get();
 
-    if (cartItemsSnapshot.docs.isNotEmpty) {
-      for (final item in cartItemsSnapshot.docs) {
-        final data = item.data() as Map<String, dynamic>;
-        final title = data['title'];
-        final price = data['price'];
-        final imageUrl = data['imageUrl'];
-        final quantity = data['quantity'];
-
-        final User? user = _auth.currentUser;
-        if (user != null) {
+        if (cartItemsSnapshot.docs.isNotEmpty) {
           final userId = user.uid;
-
-          String? orderId = _databaseRef.child("Orders").push().key;
-
-          String timestamp = DateTime.now().toLocal().toString();
+          final orderId = _databaseRef.child("Orders").push().key;
+          final timestamp = DateTime.now().toLocal().toString();
 
           Map<String, dynamic> orderData = {
             "userid": userId,
             "orderid": orderId,
-            "title": title,
-            "price": price,
-            "imageUrl": imageUrl,
-            "quantity": quantity,
             "orderStatus": "Pending",
             "Address": userAddress,
             "timestamp": timestamp,
             "selectedDeliveryOption": selectedDeliveryOption,
+            "items": cartItemsSnapshot.docs.map((item) {
+              final data = item.data() as Map<String, dynamic>;
+              return {
+                "title": data['title'],
+                "price": data['price'],
+                "imageUrl": data['imageUrl'],
+                "quantity": data['quantity'],
+              };
+            }).toList(),
           };
 
-          try {
-            await _databaseRef.child("Orders").child(orderId!).set(orderData);
+          await _databaseRef.child("Orders").child(orderId!).set(orderData);
 
+          // Delete individual cart items
+          for (final item in cartItemsSnapshot.docs) {
             await FirebaseFirestore.instance
                 .collection('cartItems')
                 .doc(item.id)
                 .delete();
-
-            print("Order Placed");
-          } catch (error) {
-            print("Error placing order: $error");
           }
+
+          print("Order Placed");
+          showOrderPlacedAlert();
         } else {
-          print("User is not authenticated.");
+          print("Cart is empty.");
         }
-        showOrderPlacedAlert();
+      } catch (error) {
+        print("Error placing order: $error");
       }
+    } else {
+      print("User is not authenticated.");
     }
   }
 
@@ -237,6 +240,7 @@ class _CartPageState extends State<CartPage> {
           .set(cartItemData)
           .then((value) => print("Added to Cart"));
     }
+    // Delete individual cart items
   }
 
   Future<void> fetchCartItems() async {
