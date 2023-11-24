@@ -10,13 +10,13 @@ class Product extends StatefulWidget {
   Product(
       {required this.burgerData,
       Key? key,
-      required Map<String, dynamic> PastryData,
-      required Map<String, dynamic> coffeeData,
-      required Map<String, dynamic> CoffeeData,
-      required Map<String, dynamic> ChickenData,
-      required Map<String, dynamic> JuiceData,
+      required Map PastryData,
       required Map IceCreamData,
-      required Map<String, dynamic> SaladData})
+      required Map coffeeData,
+      required Map CoffeeData,
+      required Map ChickenData,
+      required Map JuiceData,
+      required Map SaladData})
       : super(key: key);
 
   @override
@@ -146,11 +146,17 @@ class _ProductState extends State<Product> {
   @override
   Widget build(BuildContext context) {
     final title = widget.burgerData['title'] ?? "Default Title";
-    final price = widget.burgerData['price'] ?? "Default Price";
+    final price = widget.burgerData['price'];
     final description =
         widget.burgerData['description'] ?? "Default Description";
     final imageUrl = widget.burgerData['imageUrl'] ?? "Default Image URL";
 
+    // Validate and handle the price
+
+    final formattedPrice = double.tryParse(price ?? "");
+    final displayPrice = formattedPrice != null
+        ? 'Rs. ${formattedPrice.toStringAsFixed(2)}'
+        : 'Invalid Price';
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
@@ -177,7 +183,7 @@ class _ProductState extends State<Product> {
               ],
             ),
             Expanded(
-              child: scroll(title, price, description),
+              child: scroll(title, displayPrice, description),
             ),
           ],
         ),
@@ -257,7 +263,7 @@ class _ProductState extends State<Product> {
                 Row(
                   children: [
                     Text(
-                      'Rs. ' + price,
+                      price,
                       style: const TextStyle(
                         fontSize: 21,
                         fontWeight: FontWeight.bold,
@@ -373,7 +379,7 @@ class _ProductState extends State<Product> {
                       ),
                     ),
                     Text(
-                      'Rs. ${(double.parse(price) * quantity).toStringAsFixed(2)}',
+                      'Rs. ${((double.tryParse(price ?? "") ?? 0.0) * quantity).toStringAsFixed(2)}',
                       style: const TextStyle(
                         fontSize: 17,
                         color: mainColor,
