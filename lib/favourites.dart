@@ -1,6 +1,6 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class FavPage extends StatefulWidget {
   @override
@@ -8,12 +8,12 @@ class FavPage extends StatefulWidget {
 }
 
 class _FavPageState extends State<FavPage> {
-  User? user = FirebaseAuth.instance.currentUser; // Get the current user
+  User? user = FirebaseAuth.instance.currentUser;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: CartItemList(), // Place CartItemList in the body
+      body: CartItemList(),
     );
   }
 }
@@ -25,7 +25,7 @@ class CartItemList extends StatelessWidget {
       stream: FirebaseFirestore.instance
           .collection('Favourites')
           .where("userUID", isEqualTo: FirebaseAuth.instance.currentUser!.uid)
-          .snapshots(), // Filter items by userUID
+          .snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return const Center(

@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:miron/map_utils.dart';
-import 'package:miron/model/colors.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
+import 'package:miron/map_utils.dart';
+import 'package:miron/model/colors.dart';
 
 void main() {
-  WidgetsFlutterBinding
-      .ensureInitialized(); // Ensure Flutter services are initialized.
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(ContactUsApp());
 }
 
@@ -39,10 +38,21 @@ class _ContactUsPageState extends State<ContactUsPage> {
   }
 
   void _launchURL(String url) async {
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'Could not launch $url';
+    try {
+      if (await launchUrl(Uri.parse(url))) {
+        await launchUrl(Uri.parse(url));
+      } else {
+        throw 'Could not launch $url';
+      }
+    } catch (e) {
+      print('Error launching URL: $e');
+      // You can provide a fallback action here, such as showing an error message.
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error launching URL: $e'),
+          duration: const Duration(seconds: 2),
+        ),
+      );
     }
   }
 
@@ -55,7 +65,7 @@ class _ContactUsPageState extends State<ContactUsPage> {
           'Contact Us',
           style: TextStyle(color: Colors.white),
         ),
-        backgroundColor: mainColor, // Change the app bar color
+        backgroundColor: mainColor,
       ),
       body: FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
         future: contactData,
@@ -79,7 +89,7 @@ class _ContactUsPageState extends State<ContactUsPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const SizedBox(height: 20), // Add some spacing
+                  const SizedBox(height: 20),
                   if (logoUrl != null)
                     CachedNetworkImage(
                       imageUrl: logoUrl,
@@ -87,8 +97,8 @@ class _ContactUsPageState extends State<ContactUsPage> {
                           const CircularProgressIndicator(),
                       errorWidget: (context, url, error) =>
                           const Icon(Icons.error),
-                      width: 150, // Set the logo width
-                      height: 150, // Set the logo height
+                      width: 150,
+                      height: 150,
                     ),
                   if (title != null)
                     Padding(
@@ -101,7 +111,7 @@ class _ContactUsPageState extends State<ContactUsPage> {
                         ),
                       ),
                     ),
-                  const Divider(), // Add a horizontal line
+                  const Divider(),
                   if (email != null)
                     ListTile(
                       title: const Text(
@@ -118,7 +128,7 @@ class _ContactUsPageState extends State<ContactUsPage> {
                         child: Text(
                           email,
                           style: const TextStyle(
-                            color: Colors.blue, // Make it look like a link
+                            color: Colors.blue,
                             decoration: TextDecoration.underline,
                           ),
                         ),
@@ -145,7 +155,7 @@ class _ContactUsPageState extends State<ContactUsPage> {
                         child: Text(
                           telephone,
                           style: const TextStyle(
-                            color: Colors.blue, // Make it look like a link
+                            color: Colors.blue,
                             decoration: TextDecoration.underline,
                           ),
                         ),
@@ -161,22 +171,17 @@ class _ContactUsPageState extends State<ContactUsPage> {
                       ),
                     ),
                   Container(
-                    width: 3 /
-                        5 *
-                        MediaQuery.of(context)
-                            .size
-                            .width, // Set the width to 2/3 of the screen width
+                    width: 3 / 5 * MediaQuery.of(context).size.width,
                     height: 50,
                     child: ElevatedButton(
                       onPressed: () {
-                        _launchURL(website); // Use the _launchURL function
+                        _launchURL(website);
                       },
                       style: ButtonStyle(
                         shape:
                             MaterialStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                                15.0), // Adjust the border radius as needed
+                            borderRadius: BorderRadius.circular(15.0),
                           ),
                         ),
                       ),
@@ -195,15 +200,11 @@ class _ContactUsPageState extends State<ContactUsPage> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      subtitle: Text(address), // Show the address
+                      subtitle: Text(address),
                     ),
-                  const SizedBox(height: 20), // Add spacing
+                  const SizedBox(height: 20),
                   Container(
-                    width: 3 /
-                        5 *
-                        MediaQuery.of(context)
-                            .size
-                            .width, // Set the width to 3/5 of the screen width
+                    width: 3 / 5 * MediaQuery.of(context).size.width,
                     height: 50,
                     child: ElevatedButton(
                       onPressed: () async {
@@ -218,8 +219,7 @@ class _ContactUsPageState extends State<ContactUsPage> {
                         shape:
                             MaterialStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                                15.0), // Adjust the border radius as needed
+                            borderRadius: BorderRadius.circular(15.0),
                           ),
                         ),
                       ),

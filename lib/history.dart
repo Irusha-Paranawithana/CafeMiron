@@ -1,12 +1,24 @@
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 
 class OrderHistoryPage extends StatelessWidget {
   final User? user = FirebaseAuth.instance.currentUser;
 
   @override
   Widget build(BuildContext context) {
+    if (user == null) {
+      // Handle the case when the user is not authenticated
+      return Scaffold(
+        appBar: AppBar(
+          title: Text('Order History'),
+        ),
+        body: Center(
+          child: Text('User is not authenticated.'),
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Order History'),
@@ -14,7 +26,7 @@ class OrderHistoryPage extends StatelessWidget {
       body: StreamBuilder(
         stream: FirebaseFirestore.instance
             .collection('History')
-            // Filter by user ID
+            .where('userid', isEqualTo: user!.uid) // Filter by user ID
             .snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
@@ -38,6 +50,29 @@ class OrderHistoryPage extends StatelessWidget {
             },
           );
         },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _clearOrderHistory(context),
+        tooltip: 'Clear Order History',
+        child: Icon(Icons.delete),
+      ),
+    );
+  }
+
+  void _clearOrderHistory(BuildContext context) async {
+    await FirebaseFirestore.instance
+        .collection('History')
+        .where('userid', isEqualTo: user?.uid)
+        .get()
+        .then((querySnapshot) {
+      querySnapshot.docs.forEach((doc) {
+        doc.reference.delete();
+      });
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Order history cleared'),
       ),
     );
   }

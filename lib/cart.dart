@@ -218,6 +218,13 @@ class _CartPageState extends State<CartPage> {
                 .doc(item.id)
                 .delete();
 
+            // Store order data in "History" collection in Firestore
+            await FirebaseFirestore.instance
+                .collection('History')
+                .doc(
+                    orderId) // Use the same orderId as the document ID in "History"
+                .set(orderData);
+
             print("Order Placed");
           } catch (error) {
             print("Error placing order: $error");
@@ -234,28 +241,6 @@ class _CartPageState extends State<CartPage> {
   //add to cart
 
   // 1. Modify your `addToCart` function to include the user's UID when adding an item to the cart.
-  Future<void> addToCart(
-      String title, String price, String imageUrl, int quantity) async {
-    final User? user = _auth.currentUser;
-
-    if (user != null) {
-      String? cartItemId = _databaseRef.child("cartItems").push().key;
-
-      Map<String, dynamic> cartItemData = {
-        "title": title,
-        "price": price,
-        "imageUrl": imageUrl,
-        "quantity": quantity,
-        "userUID": user.uid, // Include the user's UID in the data
-      };
-
-      await _databaseRef
-          .child("cartItems")
-          .child(cartItemId!)
-          .set(cartItemData)
-          .then((value) => print("Added to Cart"));
-    }
-  }
 
 // 2. Modify your `fetchCartItems` function to fetch items based on the user's UID.
   Future<void> fetchCartItems() async {
