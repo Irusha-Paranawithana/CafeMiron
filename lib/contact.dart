@@ -204,7 +204,7 @@ class _ContactUsPageState extends State<ContactUsPage> {
                     ),
                   const SizedBox(height: 20),
                   Container(
-                    width: 3 / 5 * MediaQuery.of(context).size.width,
+                    width: 5 / 7 * MediaQuery.of(context).size.width,
                     height: 50,
                     child: ElevatedButton(
                       onPressed: () async {

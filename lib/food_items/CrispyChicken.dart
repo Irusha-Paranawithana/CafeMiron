@@ -37,7 +37,7 @@ class _ChickenListViewState extends State<ChickenListView>
 
   void loadAllChickenTypes() async {
     final QuerySnapshot snapshot =
-        await _firestore.collection('Crispy_Chicken_types').get();
+        await _firestore.collection('Crispy Chicken_types').get();
     final ChickenTypes =
         snapshot.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
 

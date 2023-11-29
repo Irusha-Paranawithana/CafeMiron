@@ -26,11 +26,14 @@ class Product extends StatefulWidget {
 class _ProductState extends State<Product> {
   int quantity = 1;
   bool isFavorite = false; // Initialize as not a favorite
+  double parsedPrice = 0.0;
 
   @override
   void initState() {
     super.initState();
     checkFavorite(); // Check if the item is in favorites when the widget is created
+    // Parse the initial price when the widget is created
+    parsePrice();
   }
 
   Future<void> checkFavorite() async {
@@ -141,6 +144,22 @@ class _ProductState extends State<Product> {
       // User is not signed in, handle this case as needed
       print('User is not signed in');
     }
+  }
+
+  void parsePrice() {
+    final price = widget.burgerData['price'];
+    final formattedPrice = double.tryParse(price ?? "");
+    if (formattedPrice != null) {
+      setState(() {
+        parsedPrice = formattedPrice; // Update the parsed price
+      });
+    }
+  }
+
+  // Function to calculate the total
+  double calculateTotal() {
+    return parsedPrice *
+        quantity; // Calculate the total based on parsedPrice and quantity
   }
 
   @override
@@ -377,12 +396,13 @@ class _ProductState extends State<Product> {
                       ),
                     ),
                     Text(
-                      (((price.split(' .').length > 1
-                                  ? (double.tryParse(price.split(' .')[1]) ??
-                                      0.0)
-                                  : 0.0) *
-                              quantity)
-                          .toString()),
+                      // (((price.split(' .').length > 1
+                      //             ? (double.tryParse(price.split(' .')[1]) ??
+                      //                 0.0)
+                      //             : 0.0) *
+                      //         quantity)
+                      //     .toString()),
+                      calculateTotal().toString(),
                       style: const TextStyle(
                         fontSize: 17,
                         color: mainColor,
