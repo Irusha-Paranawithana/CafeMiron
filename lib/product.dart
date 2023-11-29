@@ -379,7 +379,12 @@ class _ProductState extends State<Product> {
                       ),
                     ),
                     Text(
-                      'Rs. ${((double.tryParse(price ?? "") ?? 0.0) * quantity).toStringAsFixed(2)}',
+                      (((price.split(' .').length > 1
+                                  ? (double.tryParse(price.split(' .')[1]) ??
+                                      0.0)
+                                  : 0.0) *
+                              quantity)
+                          .toString()),
                       style: const TextStyle(
                         fontSize: 17,
                         color: mainColor,
