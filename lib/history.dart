@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:miron/model/colors.dart';
 
 class OrderHistoryPage extends StatelessWidget {
   final User? user = FirebaseAuth.instance.currentUser;
@@ -72,6 +73,7 @@ class OrderHistoryPage extends StatelessWidget {
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
+        backgroundColor: mainColor,
         content: Text('Order history cleared'),
       ),
     );
