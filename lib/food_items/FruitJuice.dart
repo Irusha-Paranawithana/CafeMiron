@@ -51,12 +51,12 @@ class _JuiceListViewState extends State<JuiceListView>
       context,
       MaterialPageRoute(
         builder: (context) => Product(
-          JuiceData: JuiceData,
+          JuiceData: {},
           PastryData: {},
           coffeeData: {},
           CoffeeData: {},
           ChickenData: {},
-          burgerData: {},
+          burgerData: JuiceData,
           IceCreamData: {},
           SaladData: {},
         ),

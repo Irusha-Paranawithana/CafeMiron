@@ -51,11 +51,11 @@ class _PastryListViewState extends State<PastryListView>
         context,
         MaterialPageRoute(
           builder: (context) => Product(
-            PastryData: PastryData,
+            PastryData: {},
             coffeeData: {},
             CoffeeData: {},
             ChickenData: {},
-            burgerData: {},
+            burgerData: PastryData,
             JuiceData: {},
             IceCreamData: {},
             SaladData: {},

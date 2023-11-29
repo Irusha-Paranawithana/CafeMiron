@@ -66,10 +66,10 @@ class _ChickenListViewState extends State<ChickenListView>
       context,
       MaterialPageRoute(
         builder: (context) => Product(
-          ChickenData: ChickenData,
+          ChickenData: {},
           PastryData: {},
           coffeeData: {},
-          burgerData: {},
+          burgerData: ChickenData,
           CoffeeData: {},
           JuiceData: {},
           IceCreamData: {},

@@ -66,10 +66,10 @@ class _CoffeeListViewState extends State<CoffeeListView>
       context,
       MaterialPageRoute(
         builder: (context) => Product(
-          CoffeeData: CoffeeData,
+          CoffeeData: {},
           PastryData: {},
           coffeeData: {},
-          burgerData: {},
+          burgerData: CoffeeData,
           ChickenData: {},
           JuiceData: {},
           IceCreamData: {},

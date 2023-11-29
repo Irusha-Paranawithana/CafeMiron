@@ -51,12 +51,12 @@ class _SaladListViewState extends State<SaladListView>
       context,
       MaterialPageRoute(
         builder: (context) => Product(
-          SaladData: SaladData,
+          SaladData: {},
           PastryData: {},
           coffeeData: {},
           CoffeeData: {},
           ChickenData: {},
-          burgerData: {},
+          burgerData: SaladData,
           IceCreamData: {},
           JuiceData: {},
         ),

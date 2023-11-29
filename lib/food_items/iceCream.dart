@@ -66,10 +66,10 @@ class _IceCreamListViewState extends State<IceCreamListView>
       context,
       MaterialPageRoute(
         builder: (context) => Product(
-          IceCreamData: IceCreamData,
+          IceCreamData: {},
           PastryData: {},
           coffeeData: {},
-          burgerData: {},
+          burgerData: IceCreamData,
           ChickenData: {},
           JuiceData: {},
           CoffeeData: {},
