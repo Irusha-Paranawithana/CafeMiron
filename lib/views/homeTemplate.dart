@@ -119,42 +119,40 @@ class _HomepageState extends State<HomePageTemplate> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        extendBody: true,
-        backgroundColor: Colors.transparent,
-        appBar: AppBar(
-          centerTitle: true,
-          title: const Text(
-            'Café Miron',
-            style: TextStyle(color: Colors.white),
-          ),
-          backgroundColor: mainColor,
+    return Scaffold(
+      extendBody: true,
+      backgroundColor: Colors.transparent,
+      appBar: AppBar(
+        centerTitle: true,
+        title: const Text(
+          'Café Miron',
+          style: TextStyle(color: Colors.white),
         ),
-        drawer: AppDrawer(
-          user: user,
-          userName: userName, // Pass userName
-          mobileNumber: mobileNumber, // Pass mobileNumber
-        ),
-        body: screens[index],
+        backgroundColor: mainColor,
+      ),
+      drawer: AppDrawer(
+        user: user,
+        userName: userName, // Pass userName
+        mobileNumber: mobileNumber, // Pass mobileNumber
+      ),
+      body: screens[index],
 
-        //bottom navigation bar
-        bottomNavigationBar: Theme(
-          data: Theme.of(context).copyWith(
-              iconTheme:
-                  const IconThemeData(color: Colors.white)), //change icon color
-          child: CurvedNavigationBar(
-            key: navigationKey,
-            height: 60,
-            backgroundColor: Colors.transparent,
-            color: mainColor,
-            buttonBackgroundColor: mainColor,
-            animationCurve: Curves.easeInOut,
-            animationDuration: const Duration(milliseconds: 300),
-            items: items,
-            index: index,
-            onTap: (index) => setState(() => this.index = index),
-          ),
+      //bottom navigation bar
+      bottomNavigationBar: Theme(
+        data: Theme.of(context).copyWith(
+            iconTheme:
+                const IconThemeData(color: Colors.white)), //change icon color
+        child: CurvedNavigationBar(
+          key: navigationKey,
+          height: 60,
+          backgroundColor: Colors.transparent,
+          color: mainColor,
+          buttonBackgroundColor: mainColor,
+          animationCurve: Curves.easeInOut,
+          animationDuration: const Duration(milliseconds: 300),
+          items: items,
+          index: index,
+          onTap: (index) => setState(() => this.index = index),
         ),
       ),
     );

@@ -157,36 +157,34 @@ class _ProductState extends State<Product> {
     final displayPrice = formattedPrice != null
         ? 'Rs. ${formattedPrice.toStringAsFixed(2)}'
         : 'Invalid Price';
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        appBar: AppBar(
-          centerTitle: true,
-          title: const Text(
-            'Café Miron',
-            style: TextStyle(color: Colors.white),
-          ),
-          backgroundColor: mainColor,
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        centerTitle: true,
+        title: const Text(
+          'Café Miron',
+          style: TextStyle(color: Colors.white),
         ),
-        body: Column(
-          children: [
-            Stack(
-              children: [
-                SizedBox(
-                  height: MediaQuery.of(context).size.height / 2.5,
-                  width: double.infinity,
-                  child: Image.network(
-                    imageUrl,
-                    fit: BoxFit.cover,
-                  ),
+        backgroundColor: mainColor,
+      ),
+      body: Column(
+        children: [
+          Stack(
+            children: [
+              SizedBox(
+                height: MediaQuery.of(context).size.height / 2.5,
+                width: double.infinity,
+                child: Image.network(
+                  imageUrl,
+                  fit: BoxFit.cover,
                 ),
-              ],
-            ),
-            Expanded(
-              child: scroll(title, displayPrice, description),
-            ),
-          ],
-        ),
+              ),
+            ],
+          ),
+          Expanded(
+            child: scroll(title, displayPrice, description),
+          ),
+        ],
       ),
     );
   }

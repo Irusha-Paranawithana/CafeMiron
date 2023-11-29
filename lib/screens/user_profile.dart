@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:miron/main.dart';
 import 'package:miron/model/colors.dart';
 import 'package:miron/views/home.dart';
 
@@ -144,12 +145,22 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Center(
-                      child: SizedBox(
-                        height: 150,
-                        child: Image.asset(
-                          "assets/images/profile.png",
-                          width: 120,
-                          fit: BoxFit.contain,
+                      child: ClipOval(
+                        child: Container(
+                          child: CircleAvatar(
+                            backgroundColor: Colors.white,
+                            radius: 50, // Adjust the size as needed
+                            child: Text(
+                              (userNameController.text.isNotEmpty)
+                                  ? userNameController.text[0].toUpperCase()
+                                  : 'U',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 40, // Adjust the font size
+                                color: mainColor,
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                     ),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:miron/auth_helper.dart';
 import 'package:miron/contact.dart';
 import 'package:miron/faq.dart';
+import 'package:miron/model/colors.dart';
 import 'package:miron/model/confirmationDialog.dart';
 import 'package:miron/myOrders.dart';
 import 'package:miron/pages/Review.dart';
@@ -26,10 +27,13 @@ class AppDrawer extends StatelessWidget {
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
-          UserDrawerHeader(
-            user: user,
-            userName: userName,
-            mobileNumber: mobileNumber,
+          Container(
+            color: mainColor,
+            child: UserDrawerHeader(
+              user: user,
+              userName: userName,
+              mobileNumber: mobileNumber,
+            ),
           ),
           ListTile(
             leading: Icon(Icons.person_3_rounded),
