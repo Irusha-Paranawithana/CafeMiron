@@ -92,17 +92,16 @@ class _StartScreenState extends State<StartScreen> {
               ),
             ),
             const Text(
-              'Café Miron',
+              'Gamunu Restaurant',
               style: TextStyle(
-                fontSize: 45.0,
+                fontSize: 35.0,
                 fontWeight: FontWeight.bold,
                 color: Colors.black,
               ),
             ),
             const Text(
-              'ñysß m<uq fm, ri ',
+              'Best foods',
               style: TextStyle(
-                fontFamily: "SinhalaFont",
                 fontSize: 25.0,
                 color: Color.fromARGB(255, 118, 118, 118),
               ),

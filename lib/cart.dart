@@ -19,19 +19,14 @@ class _CartPageState extends State<CartPage> {
   List<QueryDocumentSnapshot>? cartItems;
   late String selectedDeliveryOption;
 
-  Position? _currentUserPosition;
   double? distanceInMeter = 0.0;
   String? userAddress;
-  String? _residentialAddress;
-  double? _residentialLatitude;
-  double? _residentialLongitude;
 
   @override
   void initState() {
     super.initState();
-    _getTheDistance();
+
     fetchCartItems();
-    _getTheDistanceResidence();
   }
 
 //----------------------------------------------------------------------------
@@ -54,8 +49,6 @@ class _CartPageState extends State<CartPage> {
 
   //----------------------------------------------------------------------
 
-  String placeM = '';
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,7 +62,7 @@ class _CartPageState extends State<CartPage> {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          _showDeliveryOptionDialog();
+          placeOrder();
         },
         label: const Text('Place the Order'),
         icon: const Icon(Icons.shopping_bag),
@@ -92,85 +85,11 @@ class _CartPageState extends State<CartPage> {
   }
 
   //get the distance
-  Future<void> _getTheDistance() async {
-    if (await Geolocator.isLocationServiceEnabled()) {
-      if (await Geolocator.checkPermission() == LocationPermission.denied) {
-        await Geolocator.requestPermission();
-      }
-
-      _currentUserPosition = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high);
-      print(_currentUserPosition!.latitude);
-    }
-    double mironlat = 6.329167109863599;
-    double mironlng = 80.85799613887737;
-
-    distanceInMeter = await Geolocator.distanceBetween(
-        _currentUserPosition!.latitude,
-        _currentUserPosition!.longitude,
-        mironlat,
-        mironlng);
-  }
-
-  Future<void> _getTheDistanceResidence() async {
-    if (await Geolocator.isLocationServiceEnabled()) {
-      if (await Geolocator.checkPermission() == LocationPermission.denied) {
-        await Geolocator.requestPermission();
-      }
-
-      _currentUserPosition = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high);
-      print(_currentUserPosition!.latitude);
-    }
-    double mironlat = 6.329167109863599;
-    double mironlng = 80.85799613887737;
-
-    distanceInMeter = await Geolocator.distanceBetween(
-        _residentialLatitude!, _residentialLongitude!, mironlat, mironlng);
-  }
-
-  Future<void> _retrieveAddress() async {
-    List<Placemark> placemarks = await placemarkFromCoordinates(
-        _currentUserPosition!.latitude, _currentUserPosition!.longitude);
-
-    print(placemarks);
-
-    Placemark place = placemarks[0];
-
-    placeM =
-        '${place.thoroughfare},${place.street},${place.subLocality},${place.locality},${place.subAdministrativeArea},${place.administrativeArea},${place.postalCode},${place.country}';
-
-    setState(() {
-      userAddress = placeM;
-    });
-  }
-
-  Future<void> _getCoordinates() async {
-    final User? user = _auth.currentUser;
-    if (user != null) {
-      // Assuming you have a Firestore collection called 'users' where you store user information
-      final userDoc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(user.uid)
-          .get();
-      if (userDoc.exists) {
-        final userData = userDoc.data() as Map<String, dynamic>;
-        final residentialAddress = userData['residentialAddress'] as String;
-
-        if (residentialAddress != null) {
-          List<Location> location =
-              await locationFromAddress(residentialAddress);
-          _residentialLatitude = double.parse('${location.last.latitude}');
-          _residentialLongitude = double.parse('${location.last.longitude}');
-        }
-      }
-    }
-  }
 
   //place order
 
 //place order
-  Future<void> placeOrder(String selectedDeliveryOption) async {
+  Future<void> placeOrder() async {
     final cartItemsSnapshot =
         await FirebaseFirestore.instance.collection('cartItems').get();
 
@@ -202,10 +121,8 @@ class _CartPageState extends State<CartPage> {
             "imageUrl": imageUrl,
             "quantity": quantity,
             "orderStatus": "Pending",
-            "Address": userAddress,
+
             "timestamp": timestamp, // Include the timestamp as a string
-            "selectedDeliveryOption":
-                selectedDeliveryOption, // Include the delivery option
           };
 
           try {
@@ -230,7 +147,6 @@ class _CartPageState extends State<CartPage> {
             print("Error placing order: $error");
           }
         } else {
-          // Handle the case when the user is not authenticated
           print("User is not authenticated.");
         }
         showOrderPlacedAlert();
@@ -238,11 +154,6 @@ class _CartPageState extends State<CartPage> {
     }
   }
 
-  //add to cart
-
-  // 1. Modify your `addToCart` function to include the user's UID when adding an item to the cart.
-
-// 2. Modify your `fetchCartItems` function to fetch items based on the user's UID.
   Future<void> fetchCartItems() async {
     final User? user = _auth.currentUser;
 
@@ -256,142 +167,6 @@ class _CartPageState extends State<CartPage> {
         cartItems = cartItemsSnapshot.docs;
       });
     }
-  }
-
-  Future<void> _showDeliveryOptionDialog() async {
-    await showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Select Delivery Option"),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              ElevatedButton(
-                onPressed: () {
-                  setState(() async {
-                    final User? user = _auth.currentUser;
-                    if (user != null) {
-                      // Assuming you have a Firestore collection called 'users' where you store user information
-                      final userDoc = await FirebaseFirestore.instance
-                          .collection('users')
-                          .doc(user.uid)
-                          .get();
-                      if (userDoc.exists) {
-                        final userData = userDoc.data() as Map<String, dynamic>;
-                        final residentialAddress =
-                            userData['residentialAddress'] as String;
-
-                        userAddress = residentialAddress;
-                        selectedDeliveryOption = 'TakeAway';
-                        placeOrder(selectedDeliveryOption);
-                      }
-                    }
-                  });
-                  Navigator.of(context).pop();
-                  placeOrder(selectedDeliveryOption);
-                  // Show a success alert here
-                },
-                child: Text("Takeaway"),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    selectedDeliveryOption = 'Cash On Delivery';
-                  });
-                  Navigator.of(context).pop();
-                  _showDeliverylocationDialog();
-                },
-                child: Text("Cash On Delivery"),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  Future<void> _showDeliverylocationDialog() async {
-    await showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Select Delivery Location"),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              ElevatedButton(
-                onPressed: () async {
-                  // First, get the coordinates
-                  await _getCoordinates();
-
-                  // Then, get the distance and address
-                  await _getTheDistance();
-                  await _retrieveAddress();
-
-                  // Check the distance and conditionally place the order
-                  if (distanceInMeter != null && distanceInMeter! <= 3000) {
-                    placeOrder(selectedDeliveryOption);
-                  } else {
-                    // Handle the case where distance is too far
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Delivery location is too far.'),
-                        duration: const Duration(seconds: 2),
-                        backgroundColor: mainColor,
-                      ),
-                    );
-                  }
-
-                  Navigator.of(context).pop();
-                },
-                child: Text("Current Location"),
-              ),
-              ElevatedButton(
-                onPressed: () async {
-                  final User? user = _auth.currentUser;
-                  if (user != null) {
-                    // Assuming you have a Firestore collection called 'users' where you store user information
-                    final userDoc = await FirebaseFirestore.instance
-                        .collection('users')
-                        .doc(user.uid)
-                        .get();
-                    if (userDoc.exists) {
-                      final userData = userDoc.data() as Map<String, dynamic>;
-                      final residentialAddress =
-                          userData['residentialAddress'] as String;
-                      await _getCoordinates();
-
-                      // Then, get the distance and address
-                      await _getTheDistanceResidence();
-
-                      // Check the distance and conditionally place the order
-                      if (distanceInMeter != null && distanceInMeter! <= 3000) {
-                        placeOrder(selectedDeliveryOption);
-                        userAddress = residentialAddress;
-                        showOrderPlacedAlert();
-                      } else {
-                        // Handle the case where distance is too far
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('Delivery location is too far.'),
-                            duration: const Duration(seconds: 2),
-                          ),
-                        );
-                      }
-                    }
-                  }
-                  // First, get the coordinates
-
-                  Navigator.of(context).pop();
-                },
-                child: Text("Your Address"),
-              ),
-            ],
-          ),
-        );
-      },
-    );
   }
 
   void showOrderPlacedAlert() {

@@ -204,18 +204,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
                       const SizedBox(
-                        height: 80,
-                      ),
-                      SizedBox(
-                        height: 200,
-                        child: Image.asset(
-                          "assets/images/cafe_logo.png",
-                          width: 180,
-                          fit: BoxFit.contain,
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 45,
+                        height: 325,
                       ),
                       emailField,
                       const SizedBox(

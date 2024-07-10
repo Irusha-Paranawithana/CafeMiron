@@ -19,7 +19,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Café Miron',
       theme: ThemeData(
-        primarySwatch: createMaterialColor(const Color(0xFFff5003)),
+        primarySwatch:
+            createMaterialColor(const Color.fromARGB(255, 3, 175, 255)),
       ),
       initialRoute: '/',
       routes: {

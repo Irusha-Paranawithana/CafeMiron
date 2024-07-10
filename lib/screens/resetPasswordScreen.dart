@@ -85,7 +85,7 @@ class _ResetPassScreenState extends State<ResetPassScreen> {
       appBar: AppBar(
         centerTitle: true,
         title: const Text(
-          'Forget Password',
+          'Reset Password',
           style: TextStyle(color: Colors.black),
         ),
         backgroundColor: mainColor,
@@ -108,11 +108,6 @@ class _ResetPassScreenState extends State<ResetPassScreen> {
                       ),
                       SizedBox(
                         height: 200,
-                        child: Image.asset(
-                          "assets/images/cafe_logo.png",
-                          width: 180,
-                          fit: BoxFit.contain,
-                        ),
                       ),
                       const SizedBox(
                         height: 65,

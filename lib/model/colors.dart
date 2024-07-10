@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-const Color mainColor = Color(0xFFff5003);
+const Color mainColor = Color.fromARGB(255, 3, 175, 255);
 MaterialColor createMaterialColor(Color color) {
   List<int> strengths = <int>[50, 100, 200, 300, 400, 500, 600, 700, 800, 900];
   Map<int, Color> swatch = <int, Color>{};
